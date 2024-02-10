@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "description": "a book library app where i can log what books i've read",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon -r dotenv/config index.js"
   },
   "author": "",
   "license": "ISC",
