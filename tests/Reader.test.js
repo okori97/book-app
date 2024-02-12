@@ -63,6 +63,14 @@ describe('/Readers', () => {
           expect(expected.name).to.equal(record.name);
         });
       });
+
+      it('returns an error message if there are no users in the database', async () => {
+        await Reader.destroy({ truncate: true });
+        const response = await request(app).get('/readers');
+
+        expect(response.body).to.equal('No records available');
+        expect(response.status).to.equal(200);
+      });
     });
 
     describe('GET /readers/:id', () => {
