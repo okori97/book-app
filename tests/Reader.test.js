@@ -90,5 +90,20 @@ describe('/Readers', () => {
         expect(response.body).to.equal('Reader not found');
       });
     });
+
+    describe('PATCH /readers/:id', () => {
+      it('updates an existing users name in the database', async () => {
+        const idParam = readers[0].id;
+        const existingRecord = readers[0];
+        const response = await request(app)
+          .patch(`/readers/${idParam}`)
+          .send({ name: 'Martin' });
+
+        const updatedRecord = await Reader.findByPk(idParam, { raw: true });
+        expect(response.status).to.equal(200);
+        expect(existingRecord.name).to.not.equal(updatedRecord.name);
+        expect(updatedRecord.name).to.equal('Martin');
+      });
+    });
   });
 });
