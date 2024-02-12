@@ -1,17 +1,10 @@
-import setupDatabase from '../src/models/index.js';
+import { Reader, connection } from '../src/models/index.js';
 import request from 'supertest';
 import { expect } from 'chai';
 import { describe, it, before, beforeEach } from 'mocha';
 import { app } from '../src/app.js';
 
 describe('/Readers', () => {
-  let Reader;
-
-  before(async () => {
-    const db = await setupDatabase();
-    // await db.connection.sync({ force: true });
-    Reader = db.Reader;
-  });
   beforeEach(async () => {
     await Reader.destroy({ where: {} });
   });
