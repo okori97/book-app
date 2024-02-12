@@ -9,8 +9,8 @@ describe('/Readers', () => {
 
   before(async () => {
     const db = await setupDatabase();
+    // await db.connection.sync({ force: true });
     Reader = db.Reader;
-    await db.connection.sync({ force: true });
   });
   beforeEach(async () => {
     await Reader.destroy({ where: {} });
@@ -24,7 +24,14 @@ describe('/Readers', () => {
           email: 'okori@gmail.com',
         });
 
+        // console.log(response.body.id);
+        const newReader = await Reader.findByPk(response.body.id, {
+          raw: true,
+        });
         expect(response.status).to.equal(200);
+        expect(response.body.name).to.equal('Okori McCalla');
+        expect(newReader.email).to.equal('okori@gmail.com');
+        expect(newReader.name).to.equal('Okori McCalla');
       });
     });
   });
