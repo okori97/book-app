@@ -7,7 +7,6 @@ export const createReader = async (req, res) => {
       email: `${req.body.email}`,
     });
     res.status(201).json(reader);
-    console.log(reader);
   } catch (error) {
     console.error(error);
     res.status(500).json({ errorMessage: error });
@@ -48,4 +47,11 @@ export const findReader = async (req, res) => {
     console.error(error);
     res.status(500).json({ errorMessage: error });
   }
+};
+
+//Patch
+
+export const updateReader = async (req, res) => {
+  console.log(req.params);
+  res.json("it's working");
 };
