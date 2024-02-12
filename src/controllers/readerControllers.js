@@ -19,6 +19,12 @@ export const findAll = async (req, res) => {
 };
 
 export const findReader = async (req, res) => {
-  console.log(req.params);
   const { id } = req.params;
+  const reader = await Reader.findOne({
+    where: { id: id },
+    raw: true,
+    attributes: ['name', 'email', 'id'],
+  });
+  req.body = reader;
+  res.status(200).json(req.body);
 };
