@@ -8,7 +8,7 @@ const setupDatabase = () => {
     port: PGPORT,
     host: PGHOST,
     dialect: 'postgres',
-    logging: false,
+    logging: true,
   });
 
   const Reader = ReaderModel(connection, Sequelize);
