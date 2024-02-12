@@ -10,3 +10,12 @@ export const createReader = async (req, res) => {
 
   res.sendStatus(200);
 };
+
+export const findAll = async (req, res) => {
+  const readers = await Reader.findAll({
+    raw: true,
+    attributes: ['name', 'email'],
+  });
+  req.body = readers;
+  res.json(req.body);
+};
