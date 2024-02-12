@@ -6,16 +6,19 @@ export const createReader = async (req, res) => {
     email: `${req.body.email}`,
   });
   req.body.id = reader.id;
-  res.json(req.body);
-
-  res.sendStatus(200);
+  res.status(201).json(req.body);
 };
 
 export const findAll = async (req, res) => {
   const readers = await Reader.findAll({
     raw: true,
-    attributes: ['name', 'email'],
+    attributes: ['name', 'email', 'id'],
   });
   req.body = readers;
   res.json(req.body);
+};
+
+export const findReader = async (req, res) => {
+  console.log(req.params);
+  const { id } = req.params;
 };
