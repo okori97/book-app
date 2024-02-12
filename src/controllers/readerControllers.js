@@ -1,6 +1,4 @@
-import setupDatabase from '../models/index.js';
-const db = await setupDatabase();
-const Reader = db.Reader;
+import { Reader } from '../models/index.js';
 
 export const createReader = async (req, res) => {
   const reader = await Reader.create({
