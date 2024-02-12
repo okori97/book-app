@@ -7,6 +7,7 @@ export const createReader = async (req, res) => {
       email: `${req.body.email}`,
     });
     res.status(201).json(reader);
+    console.log(reader);
   } catch (error) {
     console.error(error);
     res.status(500).json({ errorMessage: error });
@@ -19,7 +20,9 @@ export const findAll = async (req, res) => {
       raw: true,
       attributes: ['name', 'email', 'id'],
     });
-    readers.length == 0 ? res.json('No records available') : res.json(readers);
+    readers.length == 0
+      ? res.status(404).json('No records available')
+      : res.json(readers);
   } catch (error) {
     console.error(error);
     res.status(500).json({ errorMessage: error });
@@ -34,8 +37,13 @@ export const findReader = async (req, res) => {
       raw: true,
       attributes: ['name', 'email', 'id'],
     });
-    req.body = reader;
-    res.status(200).json(reader);
+
+    if (reader == null) {
+      res.status(404).json('Reader not found');
+    } else {
+      req.body = reader;
+      res.status(200).json(reader);
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({ errorMessage: error });
