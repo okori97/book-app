@@ -8,8 +8,7 @@ export const createReader = async (req, res) => {
     });
     res.status(201).json(reader);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ errorMessage: error });
+    handleError(error, res);
   }
 };
 
@@ -23,8 +22,7 @@ export const findAll = async (req, res) => {
       ? res.status(404).json('No records available')
       : res.json(readers);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ errorMessage: error });
+    handleError(error, res);
   }
 };
 
@@ -44,14 +42,30 @@ export const findReader = async (req, res) => {
       res.status(200).json(reader);
     }
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ errorMessage: error });
+    handleError(error, res);
   }
 };
 
 //Patch
 
 export const updateReader = async (req, res) => {
-  console.log(req.params);
-  res.json("it's working");
+  try {
+    const { id } = req.params;
+    const { name } = req.body;
+    const updatedRecord = await Reader.update(
+      { name: `${name}` },
+      { where: { id: id } }
+    );
+    if (updatedRecord == false) {
+      res.status(404).json('User does not exist');
+    } else {
+      res.json(updatedRecord);
+    }
+  } catch (error) {
+    handleError(error, res);
+  }
 };
+function handleError(error, res) {
+  console.error(error);
+  return res.status(500).json({ errorMessage: error });
+}
