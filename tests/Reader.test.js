@@ -4,15 +4,15 @@ import { expect, should, use } from 'chai';
 import { describe, it, beforeEach } from 'mocha';
 import { app } from '../src/app.js';
 import chaiThings from 'chai-things';
-
 should(use(chaiThings));
+
 describe('/Readers', () => {
   beforeEach(async () => {
     await Reader.destroy({ where: {} });
   });
 
   describe('with no records in the database', () => {
-    describe('/POST', () => {
+    describe('POST /readers', () => {
       it('creates new records in the database', async () => {
         const response = await request(app).post('/readers').send({
           name: 'Okori McCalla',
@@ -43,8 +43,8 @@ describe('/Readers', () => {
       },
     ];
 
-    describe('/GET', () => {
-      it('returns all readers in the database', async () => {
+    describe('GET /readers', () => {
+      it('gets all records in the database', async () => {
         records.map(async (record) => {
           await Reader.create({
             name: `${record.name}`,
