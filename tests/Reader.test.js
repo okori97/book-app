@@ -22,6 +22,7 @@ describe('/Readers', () => {
         const newReader = await Reader.findByPk(response.body.id, {
           raw: true,
         });
+
         expect(response.status).to.equal(201);
         expect(response.body.name).to.equal('Okori McCalla');
         expect(newReader.email).to.equal('okori@gmail.com');
@@ -44,12 +45,12 @@ describe('/Readers', () => {
           email: 'patrick@gmail.com',
         },
       ]);
+      readers = readers.map((record) => record.get({ plain: true }));
     });
 
     describe('GET /readers', () => {
       it('gets all records in the database', async () => {
         const response = await request(app).get('/readers');
-        readers = readers.map((record) => record.get({ plain: true }));
 
         expect(response.status).to.equal(200);
         expect(response.body.length).to.equal(2);
@@ -61,6 +62,17 @@ describe('/Readers', () => {
           });
           expect(expected.name).to.equal(record.name);
         });
+      });
+    });
+
+    describe('GET /readers/:id', () => {
+      it('gets a single reader by id', async () => {
+        const idParam = readers[0].id;
+        const response = await request(app).get(`/readers/${idParam}`);
+        const expected = readers.find((reader) => reader.id == idParam);
+        expect(response.status).to.equal(200);
+        expect(expected.name).to.equal(response.body.name);
+        expect(expected.email).to.equal(response.body.email);
       });
     });
   });
