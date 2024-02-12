@@ -1,30 +1,43 @@
 import { Reader } from '../models/index.js';
 
 export const createReader = async (req, res) => {
-  const reader = await Reader.create({
-    name: `${req.body.name}`,
-    email: `${req.body.email}`,
-  });
-  req.body.id = reader.id;
-  res.status(201).json(req.body);
+  try {
+    const reader = await Reader.create({
+      name: `${req.body.name}`,
+      email: `${req.body.email}`,
+    });
+    res.status(201).json(reader);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ errorMessage: error });
+  }
 };
 
 export const findAll = async (req, res) => {
-  const readers = await Reader.findAll({
-    raw: true,
-    attributes: ['name', 'email', 'id'],
-  });
-  req.body = readers;
-  res.json(req.body);
+  try {
+    const readers = await Reader.findAll({
+      raw: true,
+      attributes: ['name', 'email', 'id'],
+    });
+    readers.length == 0 ? res.json('No records available') : res.json(readers);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ errorMessage: error });
+  }
 };
 
 export const findReader = async (req, res) => {
-  const { id } = req.params;
-  const reader = await Reader.findOne({
-    where: { id: id },
-    raw: true,
-    attributes: ['name', 'email', 'id'],
-  });
-  req.body = reader;
-  res.status(200).json(req.body);
+  try {
+    const { id } = req.params;
+    const reader = await Reader.findOne({
+      where: { id: id },
+      raw: true,
+      attributes: ['name', 'email', 'id'],
+    });
+    req.body = reader;
+    res.status(200).json(reader);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ errorMessage: error });
+  }
 };
