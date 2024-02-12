@@ -69,7 +69,7 @@ describe('/Readers', () => {
         const response = await request(app).get('/readers');
 
         expect(response.body).to.equal('No records available');
-        expect(response.status).to.equal(200);
+        expect(response.status).to.equal(404);
       });
     });
 
@@ -81,6 +81,13 @@ describe('/Readers', () => {
         expect(response.status).to.equal(200);
         expect(expected.name).to.equal(response.body.name);
         expect(expected.email).to.equal(response.body.email);
+      });
+
+      it('returns an error message if the user does not exist', async () => {
+        const response = await request(app).get(`/readers/1234`);
+
+        expect(response.status).to.equal(404);
+        expect(response.body).to.equal('Reader not found');
       });
     });
   });
