@@ -29,35 +29,35 @@ describe('/Readers', () => {
         expect(newReader.name).to.equal('Okori McCalla');
       });
     });
+  });
 
-    describe('with records in the database', () => {
-      const records = [
-        {
-          name: 'Okori McCalla',
-          email: 'okori@gmail.com',
-        },
-        {
-          name: 'Patrick Batemen',
-          email: 'patrick@gmail.com',
-        },
-      ];
+  describe('with records in the database', () => {
+    const records = [
+      {
+        name: 'Okori McCalla',
+        email: 'okori@gmail.com',
+      },
+      {
+        name: 'Patrick Batemen',
+        email: 'patrick@gmail.com',
+      },
+    ];
 
-      describe('/GET', () => {
-        it('returns all readers in the database', async () => {
-          records.map(async (record) => {
-            await Reader.create({
-              name: `${record.name}`,
-              email: `${record.email}`,
-            });
+    describe('/GET', () => {
+      it('returns all readers in the database', async () => {
+        records.map(async (record) => {
+          await Reader.create({
+            name: `${record.name}`,
+            email: `${record.email}`,
           });
-
-          const response = await request(app).get('/readers');
-
-          response.body.should.all.not.have.property('createdAt');
-          response.body.should.all.not.have.property('updatedAt');
-          expect(response.body).to.eql(records);
-          expect(response.status).to.equal(200);
         });
+
+        const response = await request(app).get('/readers');
+
+        response.body.should.all.not.have.property('createdAt');
+        response.body.should.all.not.have.property('updatedAt');
+        expect(response.body).to.eql(records);
+        expect(response.status).to.equal(200);
       });
     });
   });
