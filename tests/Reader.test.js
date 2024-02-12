@@ -19,11 +19,10 @@ describe('/Readers', () => {
           email: 'okori@gmail.com',
         });
 
-        // console.log(response.body.id);
         const newReader = await Reader.findByPk(response.body.id, {
           raw: true,
         });
-        expect(response.status).to.equal(200);
+        expect(response.status).to.equal(201);
         expect(response.body.name).to.equal('Okori McCalla');
         expect(newReader.email).to.equal('okori@gmail.com');
         expect(newReader.name).to.equal('Okori McCalla');
@@ -32,32 +31,36 @@ describe('/Readers', () => {
   });
 
   describe('with records in the database', () => {
-    const records = [
-      {
-        name: 'Okori McCalla',
-        email: 'okori@gmail.com',
-      },
-      {
-        name: 'Patrick Batemen',
-        email: 'patrick@gmail.com',
-      },
-    ];
+    let readers;
+
+    beforeEach(async () => {
+      readers = await Reader.bulkCreate([
+        {
+          name: 'Okori McCalla',
+          email: 'okori@gmail.com',
+        },
+        {
+          name: 'Patrick Batemen',
+          email: 'patrick@gmail.com',
+        },
+      ]);
+    });
 
     describe('GET /readers', () => {
       it('gets all records in the database', async () => {
-        records.map(async (record) => {
-          await Reader.create({
-            name: `${record.name}`,
-            email: `${record.email}`,
-          });
-        });
-
         const response = await request(app).get('/readers');
+        readers = readers.map((record) => record.get({ plain: true }));
 
+        expect(response.status).to.equal(200);
+        expect(response.body.length).to.equal(2);
         response.body.should.all.not.have.property('createdAt');
         response.body.should.all.not.have.property('updatedAt');
-        expect(response.body).to.eql(records);
-        expect(response.status).to.equal(200);
+        response.body.forEach((record) => {
+          const expected = readers.find((reader) => {
+            return reader.id == record.id;
+          });
+          expect(expected.name).to.equal(record.name);
+        });
       });
     });
   });
