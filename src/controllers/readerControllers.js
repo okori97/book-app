@@ -19,7 +19,7 @@ export const findAll = async (req, res) => {
       attributes: ['name', 'email', 'id'],
     });
     readers.length == 0
-      ? res.status(404).json('No records available')
+      ? res.status(404).json({ error: 'No records available' })
       : res.json(readers);
   } catch (error) {
     handleError(error, res);
@@ -36,7 +36,7 @@ export const findReader = async (req, res) => {
     });
 
     if (reader == null) {
-      res.status(404).json('Reader not found');
+      res.status(404).json({ error: 'User does not exist' });
     } else {
       req.body = reader;
       res.status(200).json(reader);
@@ -57,7 +57,7 @@ export const updateReader = async (req, res) => {
       { where: { id: id } }
     );
     if (updatedRecord == false) {
-      res.status(404).json('User does not exist');
+      res.status(404).json({ error: 'User does not exist' });
     } else {
       res.json(updatedRecord);
     }
@@ -71,7 +71,7 @@ export const deleteReader = async (req, res) => {
     const { id } = req.params;
     const deletion = await Reader.destroy({ where: { id: id } });
     if (deletion == false) {
-      res.status(404).json('User does not exist');
+      res.status(404).json({ error: 'User does not exist' });
     }
     {
       res.json(deletion);
@@ -83,5 +83,5 @@ export const deleteReader = async (req, res) => {
 
 function handleError(error, res) {
   console.error(error);
-  return res.status(500).json({ errorMessage: error });
+  return res.status(500).json({ error: error });
 }
