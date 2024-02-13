@@ -115,6 +115,7 @@ describe('/Readers', () => {
         const deletedReader = await Reader.findByPk(idParam, { raw: true });
 
         expect(response.status).to.equal(200);
+        expect(response.body).to.equal(1);
         expect(existingRecord).to.not.equal(null);
         expect(deletedReader).to.equal(null);
       });
