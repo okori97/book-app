@@ -28,6 +28,16 @@ describe('/Readers', () => {
         expect(newReader.email).to.equal('okori@gmail.com');
         expect(newReader.name).to.equal('Okori McCalla');
       });
+
+      it('returns a 400 if request is not of the correct type', async () => {
+        const response = await request(app)
+          .post('/readers')
+          .send('badthing')
+          .set('Content-Type', 'text/html');
+
+        expect(response.body).to.eql({ error: 'Bad request' });
+        expect(response.status).to.equal(400);
+      });
     });
   });
 
@@ -85,7 +95,6 @@ describe('/Readers', () => {
 
       it('returns a 404 if the user does not exist', async () => {
         const response = await request(app).get(`/readers/1234`);
-
         expect(response.status).to.equal(404);
         expect(response.body.error).to.equal('User does not exist');
       });
@@ -107,10 +116,22 @@ describe('/Readers', () => {
       });
 
       it('returns a 404 if user does not exist', async () => {
-        const response = await request(app).patch('/readers/1234');
+        const response = await request(app)
+          .patch(`/readers/1234`)
+          .set('Content-Type', 'application/json');
 
         expect(response.status).to.equal(404);
         expect(response.body.error).to.equal('User does not exist');
+      });
+
+      it('returns a 400 if request is not of the correct type', async () => {
+        const response = await request(app)
+          .patch(`/readers/${readers[0].id}`)
+          .send('badthing')
+          .set('Content-Type', 'text/html');
+
+        expect(response.body).to.eql({ error: 'Bad request' });
+        expect(response.status).to.equal(400);
       });
     });
 
@@ -133,6 +154,16 @@ describe('/Readers', () => {
 
         expect(response.status).to.equal(404);
         expect(response.body.error).to.equal('User does not exist');
+      });
+
+      it('returns a 400 if request is not of the correct type', async () => {
+        const response = await request(app)
+          .delete(`/readers/${readers[0].id}`)
+          .send('badthing')
+          .set('Content-Type', 'text/html');
+
+        expect(response.body).to.eql({ error: 'Bad request' });
+        expect(response.status).to.equal(400);
       });
     });
   });
