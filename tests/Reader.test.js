@@ -105,5 +105,19 @@ describe('/Readers', () => {
         expect(updatedRecord.name).to.equal('Martin');
       });
     });
+
+    describe('DELETE /readers/:id', () => {
+      it('deletes an existing user from the database', async () => {
+        const idParam = readers[0].id;
+        const existingRecord = readers[0];
+
+        const response = await request(app).delete(`/readers/${idParam}`);
+        const deletedReader = await Reader.findByPk(idParam, { raw: true });
+
+        expect(response.status).to.equal(200);
+        expect(existingRecord).to.not.equal(null);
+        expect(deletedReader).to.equal(null);
+      });
+    });
   });
 });
