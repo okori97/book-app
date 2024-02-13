@@ -101,6 +101,7 @@ describe('/Readers', () => {
 
         const updatedRecord = await Reader.findByPk(idParam, { raw: true });
         expect(response.status).to.equal(200);
+        expect(response.body).to.eql({ success: 'User updated' });
         expect(existingRecord.name).to.not.equal(updatedRecord.name);
         expect(updatedRecord.name).to.equal('Martin');
       });
@@ -122,9 +123,16 @@ describe('/Readers', () => {
         const deletedReader = await Reader.findByPk(idParam, { raw: true });
 
         expect(response.status).to.equal(200);
-        expect(response.body).to.equal(1);
+        expect(response.body).to.eql({ success: 'User deleted' });
         expect(existingRecord).to.not.equal(null);
         expect(deletedReader).to.equal(null);
+      });
+
+      it('returns a 404 if user does not exist', async () => {
+        const response = await request(app).delete(`/readers/1234`);
+
+        expect(response.status).to.equal(404);
+        expect(response.body.error).to.equal('User does not exist');
       });
     });
   });

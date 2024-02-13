@@ -59,7 +59,7 @@ export const updateReader = async (req, res) => {
     if (updatedRecord == false) {
       res.status(404).json({ error: 'User does not exist' });
     } else {
-      res.json(updatedRecord);
+      res.json({ success: 'User updated' });
     }
   } catch (error) {
     handleError(error, res);
@@ -72,9 +72,8 @@ export const deleteReader = async (req, res) => {
     const deletion = await Reader.destroy({ where: { id: id } });
     if (deletion == false) {
       res.status(404).json({ error: 'User does not exist' });
-    }
-    {
-      res.json(deletion);
+    } else {
+      res.json({ success: 'User deleted' });
     }
   } catch (error) {
     handleError(error, res);
