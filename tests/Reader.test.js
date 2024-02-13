@@ -64,11 +64,11 @@ describe('/Readers', () => {
         });
       });
 
-      it('returns an error message if there are no users in the database', async () => {
+      it('returns a 404 if there are no users in the database', async () => {
         await Reader.destroy({ truncate: true });
         const response = await request(app).get('/readers');
 
-        expect(response.body).to.equal('No records available');
+        expect(response.body.error).to.equal('No records available');
         expect(response.status).to.equal(404);
       });
     });
@@ -83,11 +83,11 @@ describe('/Readers', () => {
         expect(expected.email).to.equal(response.body.email);
       });
 
-      it('returns an error message if the user does not exist', async () => {
+      it('returns a 404 if the user does not exist', async () => {
         const response = await request(app).get(`/readers/1234`);
 
         expect(response.status).to.equal(404);
-        expect(response.body).to.equal('Reader not found');
+        expect(response.body.error).to.equal('User does not exist');
       });
     });
 
@@ -103,6 +103,13 @@ describe('/Readers', () => {
         expect(response.status).to.equal(200);
         expect(existingRecord.name).to.not.equal(updatedRecord.name);
         expect(updatedRecord.name).to.equal('Martin');
+      });
+
+      it('returns a 404 if user does not exist', async () => {
+        const response = await request(app).patch('/readers/1234');
+
+        expect(response.status).to.equal(404);
+        expect(response.body.error).to.equal('User does not exist');
       });
     });
 
