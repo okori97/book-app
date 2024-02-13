@@ -82,12 +82,16 @@ export const updateReader = async (req, res) => {
 
 export const deleteReader = async (req, res) => {
   try {
-    const { id } = req.params;
-    const deletion = await Reader.destroy({ where: { id: id } });
-    if (deletion == false) {
-      res.status(404).json({ error: 'User does not exist' });
+    if (!req.is('application/json') && req.is('application/json') !== null) {
+      res.status(400).json({ error: 'Bad request' });
     } else {
-      res.json({ success: 'User deleted' });
+      const { id } = req.params;
+      const deletion = await Reader.destroy({ where: { id: id } });
+      if (deletion == false) {
+        res.status(404).json({ error: 'User does not exist' });
+      } else {
+        res.json({ success: 'User deleted' });
+      }
     }
   } catch (error) {
     handleError(error, res);
