@@ -2,11 +2,15 @@ import { Reader } from '../models/index.js';
 
 export const createReader = async (req, res) => {
   try {
-    const reader = await Reader.create({
-      name: `${req.body.name}`,
-      email: `${req.body.email}`,
-    });
-    res.status(201).json(reader);
+    if (!req.is('application/json') && req.is('application/json') !== null) {
+      res.status(400).json({ error: 'Bad request' });
+    } else {
+      const reader = await Reader.create({
+        name: `${req.body.name}`,
+        email: `${req.body.email}`,
+      });
+      res.status(201).json(reader);
+    }
   } catch (error) {
     handleError(error, res);
   }
@@ -28,18 +32,22 @@ export const findAll = async (req, res) => {
 
 export const findReader = async (req, res) => {
   try {
-    const { id } = req.params;
-    const reader = await Reader.findOne({
-      where: { id: id },
-      raw: true,
-      attributes: ['name', 'email', 'id'],
-    });
-
-    if (reader == null) {
-      res.status(404).json({ error: 'User does not exist' });
+    if (!req.is('application/json') && req.is('application/json') !== null) {
+      res.status(400).json({ error: 'Bad request' });
     } else {
-      req.body = reader;
-      res.status(200).json(reader);
+      const { id } = req.params;
+      const reader = await Reader.findOne({
+        where: { id: id },
+        raw: true,
+        attributes: ['name', 'email', 'id'],
+      });
+
+      if (reader == null) {
+        res.status(404).json({ error: 'User does not exist' });
+      } else {
+        req.body = reader;
+        res.status(200).json(reader);
+      }
     }
   } catch (error) {
     handleError(error, res);
@@ -50,16 +58,22 @@ export const findReader = async (req, res) => {
 
 export const updateReader = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { name } = req.body;
-    const updatedRecord = await Reader.update(
-      { name: `${name}` },
-      { where: { id: id } }
-    );
-    if (updatedRecord == false) {
-      res.status(404).json({ error: 'User does not exist' });
+    if (!req.is('application/json') && req.is('application/json') !== null) {
+      res.status(400).json({ error: 'Bad request' });
     } else {
-      res.json({ success: 'User updated' });
+      const { id } = req.params;
+      const { name } = req.body;
+
+      const updatedRecord = await Reader.update(
+        { name: `${name}` },
+        { where: { id: id } }
+      );
+
+      if (updatedRecord == false) {
+        res.status(404).json({ error: 'User does not exist' });
+      } else {
+        res.json({ success: 'User updated' });
+      }
     }
   } catch (error) {
     handleError(error, res);
