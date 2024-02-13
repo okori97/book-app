@@ -65,6 +65,16 @@ export const updateReader = async (req, res) => {
     handleError(error, res);
   }
 };
+
+export const deleteReader = async (req, res) => {
+  try {
+    console.log('working');
+    res.json({});
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+
 function handleError(error, res) {
   console.error(error);
   return res.status(500).json({ errorMessage: error });
