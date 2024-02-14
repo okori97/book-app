@@ -116,11 +116,12 @@ describe('/Books', () => {
             });
 
           const existingBook = books[1];
+          const updatedBook = await Book.findByPk(books[1].id);
 
           expect(response.status).to.equal(200);
-          expect(response.body.title).to.not.eql(existingBook.title);
-          expect(response.body.author).to.eql(existingBook.author);
-          expect(response.body.ISBN).to.eql(existingBook.ISBN);
+          expect(updatedBook.title).to.not.eql(existingBook.title);
+          expect(updatedBook.author).to.eql(existingBook.author);
+          expect(updatedBook.ISBN).to.eql(existingBook.ISBN);
         });
 
         it('returns a 404 if book does not exist', async () => {
@@ -139,7 +140,7 @@ describe('/Books', () => {
             .set('Content-Type', 'text/html');
 
           expect(response.status).to.equal(400);
-          expect(response.body.error).to.eql('Bad network request');
+          expect(response.body.error).to.eql('Bad request');
         });
       });
 
