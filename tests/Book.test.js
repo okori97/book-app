@@ -157,8 +157,8 @@ describe('/Books', () => {
 
           expect(currentBooks.length).to.equal(books.length - 1);
           expect(response.status).to.equal(200);
-          expect(deletedBook).to.be(null);
-          expect(existingRecord).to.not.be(null);
+          expect(deletedBook).to.equal(null);
+          expect(existingRecord).to.not.equal(null);
           expect(response.body.success).eql('Book deleted');
         });
 
@@ -175,7 +175,10 @@ describe('/Books', () => {
         });
 
         it('returns a 400 if request is not of the correct type', async () => {
-          const response = await request(app).delete(`/books/${books[0].id}`);
+          const response = await request(app)
+            .delete(`/books/${books[0].id}`)
+            .send('badthing')
+            .set('Content-Type', 'text/html');
 
           expect(response.status).to.eql(400);
           expect(response.body.error).to.eql('Bad request');
