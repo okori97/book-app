@@ -143,10 +143,14 @@ describe('/Readers', () => {
       it('deletes an existing user from the database', async () => {
         const idParam = readers[0].id;
         const existingRecord = readers[0];
-
         const response = await request(app).delete(`/readers/${idParam}`);
         const deletedReader = await Reader.findByPk(idParam, { raw: true });
+        const currentReaders = await Reader.findAll({
+          raw: true,
+          attributes: ['name', 'email', 'password'],
+        });
 
+        expect(currentReaders.length).to.equal(readers.length - 1);
         expect(response.status).to.equal(200);
         expect(response.body).to.eql({ success: 'User deleted' });
         expect(existingRecord).to.not.equal(null);
