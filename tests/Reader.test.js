@@ -17,6 +17,7 @@ describe('/Readers', () => {
         const response = await request(app).post('/readers').send({
           name: 'Okori McCalla',
           email: 'okori@gmail.com',
+          password: 'password123',
         });
 
         const newReader = await Reader.findByPk(response.body.id, {
@@ -27,6 +28,7 @@ describe('/Readers', () => {
         expect(response.body.name).to.equal('Okori McCalla');
         expect(newReader.email).to.equal('okori@gmail.com');
         expect(newReader.name).to.equal('Okori McCalla');
+        expect(newReader.password).to.equal('password123');
       });
 
       it('returns a 400 if request is not of the correct type', async () => {
@@ -49,10 +51,12 @@ describe('/Readers', () => {
         {
           name: 'Okori McCalla',
           email: 'okori@gmail.com',
+          password: 'password123',
         },
         {
           name: 'Patrick Batemen',
           email: 'patrick@gmail.com',
+          password: 'password321',
         },
       ]);
       readers = readers.map((record) => record.get({ plain: true }));

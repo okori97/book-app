@@ -8,6 +8,7 @@ export const createReader = async (req, res) => {
       const reader = await Reader.create({
         name: `${req.body.name}`,
         email: `${req.body.email}`,
+        password: `${req.body.password}`,
       });
       res.status(201).json(reader);
     }
