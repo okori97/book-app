@@ -1,4 +1,5 @@
 import { Reader } from '../models/index.js';
+import handleError from '../utils/functions/handleError.js';
 
 export const createReader = async (req, res) => {
   try {
@@ -98,8 +99,3 @@ export const deleteReader = async (req, res) => {
     handleError(error, res);
   }
 };
-
-function handleError(error, res) {
-  console.error(error);
-  return res.status(500).json({ error: error });
-}
