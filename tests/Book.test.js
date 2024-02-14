@@ -16,15 +16,15 @@ describe('/Books', () => {
     describe('POST /books', () => {
       it('creates new records in the database', async () => {
         const response = await request(app).post('/books').send({
-          name: 'The Trial',
+          title: 'The Trial',
           author: 'Franz Kafka',
           genre: 'Surreal',
           ISBN: 'GB29 NWBK 6016 1331 9268 19',
         });
-        const newBook = await Book.findByPk(response.body.id);
+        const newBook = await Book.findByPk(response.body.id, { raw: true });
 
-        expect(response.status).to.equal(200);
-        expect(response.body.name).to.equal('The Trial');
+        expect(response.status).to.equal(201);
+        expect(response.body.title).to.equal('The Trial');
         expect(newBook.title).to.equal('The Trial');
         expect(newBook.author).to.equal('Franz Kafka');
         expect(newBook.genre).to.equal('Surreal');
@@ -47,28 +47,34 @@ describe('/Books', () => {
       beforeEach(async () => {
         books = await Book.bulkCreate([
           {
-            name: 'The Trial',
+            title: 'The Trial',
             author: 'Franz Kafka',
             genre: 'Surreal',
             ISBN: 'GB29 NWBK 6016 1331 9268 19',
           },
           {
-            name: 'Infinite Jest',
+            title: 'Infinite Jest',
             author: 'David F. Wallace',
             genre: 'Postmodern',
             ISBN: 'GB33 NWBK 4024 1551 9227 86',
           },
         ]);
+
+        books = books.map((record) => record.get({ plain: true }));
       });
 
       describe('GET /books', () => {
         it('gets all the records in the database', async () => {
           const response = await request(app).get('/books');
+
           expect(response.status).to.equal(200);
           expect(response.body.length).to.equal(2);
 
-          response.body.map((record) => {
-            const expected = books.find((book) => book.id == record.id);
+          response.body.forEach((record) => {
+            const expected = books.find((book) => {
+              return book.id == record.id;
+            });
+
             expect(record.title).eql(expected.title);
             expect(record.author).eql(expected.author);
           });
@@ -79,7 +85,7 @@ describe('/Books', () => {
           const response = await request(app).get('/books');
 
           expect(response.status).to.equal(404);
-          expect(response.body.error).to.equal('No Books found!');
+          expect(response.body.error).to.equal('No books found!');
         });
       });
 
@@ -130,7 +136,7 @@ describe('/Books', () => {
           const response = await request(app)
             .patch(`/books/${books[1].id}`)
             .send('badthing')
-            .set('Content-Type', 'application/json');
+            .set('Content-Type', 'text/html');
 
           expect(response.status).to.equal(400);
           expect(response.body.error).to.eql('Bad network request');
