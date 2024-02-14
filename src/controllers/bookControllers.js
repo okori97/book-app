@@ -55,13 +55,11 @@ export const updateBook = async (req, res) => {
     if (!req.is('application/json') && req.is('application/json') !== null) {
       res.status(400).json({ error: 'Bad request' });
     } else {
-      console.log(req.body.title);
       const updatedBook = await Book.update(
         { title: `${req.body.title}` },
         { where: { id: `${req.params.id}` } }
       );
 
-      console.log(updatedBook);
       updatedBook != false
         ? res.json(updatedBook)
         : res.status(404).json({ error: 'Book not found!' });
