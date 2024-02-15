@@ -37,8 +37,31 @@ describe('/Readers', () => {
           .send('badthing')
           .set('Content-Type', 'text/html');
 
-        expect(response.body).to.eql({ error: 'Bad request' });
+        expect(response.body.error).to.eql('Bad request');
         expect(response.status).to.equal(400);
+      });
+
+      it('returns an error message if the password does not exist', async () => {
+        const response = await request(app).post('/readers').send({
+          name: 'Okori McCalla',
+          email: 'okori@gmail.com',
+        });
+
+        expect(response.status).to.equal(400);
+        expect(response.body.error).to.equal('Please add a password');
+      });
+
+      it('returns an error message if the password is NOT more than 8 chars', async () => {
+        const response = await request(app).post('/readers').send({
+          name: 'Okori McCalla',
+          email: 'okori@gmail.com',
+          password: 'thisis78',
+        });
+
+        expect(response.status).to.equal(400);
+        expect(response.body.error).to.equal(
+          'Password must be more than 8 characters'
+        );
       });
     });
   });
@@ -134,7 +157,7 @@ describe('/Readers', () => {
           .send('badthing')
           .set('Content-Type', 'text/html');
 
-        expect(response.body).to.eql({ error: 'Bad request' });
+        expect(response.body.error).to.eql('Bad request');
         expect(response.status).to.equal(400);
       });
     });
@@ -170,7 +193,7 @@ describe('/Readers', () => {
           .send('badthing')
           .set('Content-Type', 'text/html');
 
-        expect(response.body).to.eql({ error: 'Bad request' });
+        expect(response.body.error).to.eql('Bad request');
         expect(response.status).to.equal(400);
       });
     });
