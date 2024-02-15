@@ -6,11 +6,14 @@ export const createReader = async (req, res) => {
     if (!req.is('application/json') && req.is('application/json') !== null) {
       res.status(400).json({ error: 'Bad request' });
     } else {
+      const { name, email, password } = req.body || null;
+
       const reader = await Reader.create({
-        name: `${req.body.name}`,
-        email: `${req.body.email}`,
-        password: `${req.body.password}`,
+        name: name,
+        email: email,
+        password: password,
       });
+
       res.status(201).json(reader);
     }
   } catch (error) {
