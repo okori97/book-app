@@ -41,6 +41,48 @@ describe('/Readers', () => {
         expect(response.status).to.equal(400);
       });
 
+      it('returns an error message if the name does not exist', async () => {
+        const response = await request(app).post('/readers').send({
+          email: 'okori@gmail.com',
+          password: 'password123',
+        });
+
+        expect(response.status).to.equal(400);
+        expect(response.body.error).to.equal('Please input a name');
+      });
+      it('returns an error message if the name is an empty string', async () => {
+        const response = await request(app).post('/readers').send({
+          email: 'okori@gmail.com',
+          password: 'password123',
+          name: '',
+        });
+
+        expect(response.status).to.equal(400);
+        expect(response.body.error).to.equal('Please input a valid name');
+      });
+      it('returns an error message if the email does not exist', async () => {
+        const response = await request(app).post('/readers').send({
+          name: 'Okori Mccalla',
+          password: 'password123',
+        });
+
+        expect(response.status).to.equal(400);
+        expect(response.body.error).to.equal('Please input a email');
+      });
+
+      it('returns an error message if the email is not valid', async () => {
+        const response = await request(app).post('/readers').send({
+          email: 'okorimailcom',
+          password: 'password123',
+          name: 'Okori Mccalla',
+        });
+
+        expect(response.status).to.equal(400);
+        expect(response.body.error).to.equal(
+          'Please add a valid email address'
+        );
+      });
+
       it('returns an error message if the password does not exist', async () => {
         const response = await request(app).post('/readers').send({
           name: 'Okori McCalla',
@@ -48,7 +90,7 @@ describe('/Readers', () => {
         });
 
         expect(response.status).to.equal(400);
-        expect(response.body.error).to.equal('Please add a password');
+        expect(response.body.error).to.equal('Please input a password');
       });
 
       it('returns an error message if the password is NOT more than 8 chars', async () => {
