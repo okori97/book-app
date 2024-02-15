@@ -10,7 +10,7 @@ const ReaderModel = (connection, DataTypes) => {
         },
         notEmpty: {
           true: true,
-          msg: 'Please input a name',
+          msg: 'Please input a valid name',
         },
       },
     },
@@ -18,7 +18,10 @@ const ReaderModel = (connection, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        isEmail: true,
+        isEmail: {
+          args: true,
+          msg: 'Please add a valid email address',
+        },
         notNull: {
           args: true,
           msg: 'Please input a email',
@@ -31,7 +34,7 @@ const ReaderModel = (connection, DataTypes) => {
       validate: {
         notNull: {
           args: true,
-          msg: 'Please add a password',
+          msg: 'Please input a password',
         },
         len: {
           args: [9],
