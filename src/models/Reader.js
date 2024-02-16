@@ -44,7 +44,15 @@ const ReaderModel = (connection, DataTypes) => {
     },
   };
 
-  const ReaderModel = connection.define('Reader', schema);
+  const options = {
+    hooks: {
+      afterCreate: (reader) => {
+        delete reader.dataValues.password;
+      },
+    },
+  };
+
+  const ReaderModel = connection.define('Reader', schema, options);
   return ReaderModel;
 };
 
