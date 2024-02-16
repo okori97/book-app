@@ -6,12 +6,12 @@ export const createBook = async (req, res) => {
     if (!req.is('application/json') && req.is('application/json') !== null) {
       res.status(400).json({ error: 'Bad request' });
     } else {
-      const { title, author, genre, ISBN } = req.body;
+      const { title, author, genre, ISBN } = req.body || null;
       const newReader = await Book.create({
-        title: `${title}`,
-        author: `${author}`,
-        genre: `${genre}`,
-        ISBN: `${ISBN}`,
+        title: title,
+        author: author,
+        genre: genre,
+        ISBN: ISBN,
       });
 
       res.status(201).json(newReader);
