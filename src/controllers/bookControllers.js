@@ -2,6 +2,7 @@ import { Book } from '../models/index.js';
 import handleError from '../utils/functions/handleError.js';
 import {
   createItem,
+  deleteItem,
   findItem,
   updateItem,
 } from '../utils/functions/queries.js';
@@ -55,13 +56,7 @@ export const deleteBook = async (req, res) => {
     if (!req.is('application/json') && req.is('application/json') !== null) {
       res.status(400).json({ error: 'Bad request' });
     } else {
-      const deleteBook = await Book.destroy({
-        where: { id: `${req.params.id}` },
-      });
-
-      deleteBook != false
-        ? res.json({ success: 'Book deleted' })
-        : res.status(404).json({ error: 'Book not found' });
+      deleteItem(Book, req, res);
     }
   } catch (error) {
     handleError(error, res);

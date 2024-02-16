@@ -2,6 +2,7 @@ import { Reader } from '../models/index.js';
 import handleError from '../utils/functions/handleError.js';
 import {
   createItem,
+  deleteItem,
   findItem,
   updateItem,
 } from '../utils/functions/queries.js';
@@ -57,13 +58,7 @@ export const deleteReader = async (req, res) => {
     if (!req.is('application/json') && req.is('application/json') !== null) {
       res.status(400).json({ error: 'Bad request' });
     } else {
-      const { id } = req.params;
-      const deletion = await Reader.destroy({ where: { id: id } });
-      if (deletion == false) {
-        res.status(404).json({ error: 'User not found' });
-      } else {
-        res.json({ success: 'User deleted' });
-      }
+      deleteItem(Reader, req, res);
     }
   } catch (error) {
     handleError(error, res);
