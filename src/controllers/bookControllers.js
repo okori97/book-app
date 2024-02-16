@@ -1,5 +1,9 @@
 import { Book } from '../models/index.js';
-import handleError from '../utils/functions/handleError.js';
+import {
+  isContentTypeJson,
+  modelError,
+  requestError,
+} from '../utils/functions/validation.js';
 import {
   createItem,
   deleteItem,
@@ -9,25 +13,19 @@ import {
 
 export const createBook = async (req, res) => {
   try {
-    if (!req.is('application/json') && req.is('application/json') !== null) {
-      res.status(400).json({ error: 'Bad request' });
-    } else {
-      await createItem(Book, req, res);
-    }
+    isContentTypeJson(req)
+      ? await createItem(Book, req, res)
+      : requestError(res);
   } catch (error) {
-    handleError(error, res);
+    modelError(error, res);
   }
 };
 
 export const findAll = async (req, res) => {
   try {
-    if (!req.is('application/json') && req.is('application/json') !== null) {
-      res.status(400).json({ error: 'Bad request' });
-    } else {
-      await findItem(Book, req, res);
-    }
+    isContentTypeJson(req) ? await findItem(Book, req, res) : requestError(res);
   } catch (error) {
-    handleError(error, res);
+    modelError(error, res);
   }
 };
 
@@ -35,30 +33,26 @@ export const findBook = async (req, res) => {
   try {
     await findItem(Book, req, res);
   } catch (error) {
-    handleError(error, res);
+    modelError(error, res);
   }
 };
 
 export const updateBook = async (req, res) => {
   try {
-    if (!req.is('application/json') && req.is('application/json') !== null) {
-      res.status(400).json({ error: 'Bad request' });
-    } else {
-      updateItem(Book, req, res);
-    }
+    isContentTypeJson(req)
+      ? await updateItem(Book, req, res)
+      : requestError(res);
   } catch (error) {
-    handleError(error, res);
+    modelError(error, res);
   }
 };
 
 export const deleteBook = async (req, res) => {
   try {
-    if (!req.is('application/json') && req.is('application/json') !== null) {
-      res.status(400).json({ error: 'Bad request' });
-    } else {
-      deleteItem(Book, req, res);
-    }
+    isContentTypeJson(req)
+      ? await deleteItem(Book, req, res)
+      : requestError(res);
   } catch (error) {
-    handleError(error, res);
+    modelError(error, res);
   }
 };
