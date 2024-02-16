@@ -165,7 +165,7 @@ describe('/Readers', () => {
       it('returns a 404 if the user does not exist', async () => {
         const response = await request(app).get(`/readers/1234`);
         expect(response.status).to.equal(404);
-        expect(response.body.error).to.equal('User does not exist');
+        expect(response.body.error).to.equal('User not found');
       });
     });
 
@@ -190,7 +190,7 @@ describe('/Readers', () => {
           .set('Content-Type', 'application/json');
 
         expect(response.status).to.equal(404);
-        expect(response.body.error).to.equal('User does not exist');
+        expect(response.body.error).to.equal('User not found');
       });
 
       it('returns a 400 if request is not of the correct type', async () => {
@@ -226,7 +226,7 @@ describe('/Readers', () => {
         const response = await request(app).delete(`/readers/1234`);
 
         expect(response.status).to.equal(404);
-        expect(response.body.error).to.equal('User does not exist');
+        expect(response.body.error).to.equal('User not found');
       });
 
       it('returns a 400 if request is not of the correct type', async () => {
