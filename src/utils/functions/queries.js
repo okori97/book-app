@@ -2,13 +2,14 @@ const createItem = async (model, req, res) => {
   switch (model.name) {
     case 'Book': {
       let { title, author, genre, ISBN } = req.body || null;
-      const newReader = await model.create({
+      const newBook = await model.create({
         title: title,
         author: author,
         genre: genre,
         ISBN: ISBN,
       });
-      res.status(201).json(newReader);
+
+      res.status(201).json(newBook);
 
       break;
     }
