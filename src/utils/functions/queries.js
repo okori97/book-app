@@ -109,4 +109,32 @@ const updateItem = async (model, req, res) => {
   }
 };
 
-export { createItem, findItem, updateItem };
+const deleteItem = async (model, req, res) => {
+  switch (model.name) {
+    case 'Book': {
+      const deleteBook = await model.destroy({
+        where: { id: `${req.params.id}` },
+      });
+
+      deleteBook != false
+        ? res.json({ success: 'Book deleted' })
+        : res.status(404).json({ error: 'Book not found' });
+      break;
+    }
+    case 'Reader': {
+      const deleteReader = await model.destroy({
+        where: { id: `${req.params.id}` },
+      });
+
+      deleteReader != false
+        ? res.json({ success: 'User deleted' })
+        : res.status(404).json({ error: 'User not found' });
+
+      break;
+    }
+    default:
+      break;
+  }
+};
+
+export { createItem, findItem, updateItem, deleteItem };
