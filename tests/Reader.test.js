@@ -147,7 +147,7 @@ describe('/Readers', () => {
         await Reader.destroy({ truncate: true });
         const response = await request(app).get('/readers');
 
-        expect(response.body.error).to.equal('No records available');
+        expect(response.body.error).to.equal('No users found');
         expect(response.status).to.equal(404);
       });
     });

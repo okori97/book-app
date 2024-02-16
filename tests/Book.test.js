@@ -108,7 +108,7 @@ describe('/Books', () => {
         const response = await request(app).get('/books');
 
         expect(response.status).to.equal(404);
-        expect(response.body.error).to.equal('No books found!');
+        expect(response.body.error).to.equal('No books found');
       });
     });
 
@@ -153,7 +153,7 @@ describe('/Books', () => {
         });
 
         expect(response.status).to.equal(404);
-        expect(response.body.error).to.equal('Book not found!');
+        expect(response.body.error).to.equal('Book not found');
       });
 
       it('returns a 400 if request is not of the correct type', async () => {
