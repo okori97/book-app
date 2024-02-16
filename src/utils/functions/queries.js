@@ -55,7 +55,7 @@ const findItem = async (model, req, res) => {
           attributes: ['name', 'email', 'id'],
         });
         readers.length == 0
-          ? res.status(404).json({ error: 'No records available' })
+          ? res.status(404).json({ error: 'No users found' })
           : res.json(readers);
       } else {
         const reader = await model.findByPk(req.params.id, {
@@ -64,7 +64,7 @@ const findItem = async (model, req, res) => {
 
         reader != null
           ? res.json(reader)
-          : res.status(404).json({ error: 'User does not exist' });
+          : res.status(404).json({ error: 'User not found!' });
       }
       break;
     }
@@ -74,4 +74,39 @@ const findItem = async (model, req, res) => {
   }
 };
 
-export { createItem, findItem };
+const updateItem = async (model, req, res) => {
+  switch (model.name) {
+    case 'Book': {
+      const { id } = req.params;
+      const { title } = req.body;
+
+      const updatedBook = await model.update(
+        { title: title },
+        { where: { id: id } }
+      );
+
+      updatedBook == false
+        ? res.status(404).json({ error: 'Book not found!' })
+        : res.json({ success: 'User updated' });
+      break;
+    }
+    case 'Reader': {
+      const { id } = req.params;
+      const { name } = req.body;
+
+      const updatedReader = await model.update(
+        { name: name },
+        { where: { id: id } }
+      );
+
+      updatedReader == false
+        ? res.status(404).json({ error: 'User not found' })
+        : res.json({ success: 'User updated' });
+      break;
+    }
+    default:
+      break;
+  }
+};
+
+export { createItem, findItem, updateItem };
