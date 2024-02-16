@@ -1,20 +1,13 @@
 import { Reader } from '../models/index.js';
 import handleError from '../utils/functions/handleError.js';
+import { createItem, findItem } from '../utils/functions/queries.js';
 
 export const createReader = async (req, res) => {
   try {
     if (!req.is('application/json') && req.is('application/json') !== null) {
       res.status(400).json({ error: 'Bad request' });
     } else {
-      const { name, email, password } = req.body || null;
-
-      const reader = await Reader.create({
-        name: name,
-        email: email,
-        password: password,
-      });
-
-      res.status(201).json(reader);
+      await createItem(Reader, req, res);
     }
   } catch (error) {
     handleError(error, res);
@@ -23,13 +16,7 @@ export const createReader = async (req, res) => {
 
 export const findAll = async (req, res) => {
   try {
-    const readers = await Reader.findAll({
-      raw: true,
-      attributes: ['name', 'email', 'id'],
-    });
-    readers.length == 0
-      ? res.status(404).json({ error: 'No records available' })
-      : res.json(readers);
+    await findItem(Reader, req, res);
   } catch (error) {
     handleError(error, res);
   }
@@ -40,19 +27,7 @@ export const findReader = async (req, res) => {
     if (!req.is('application/json') && req.is('application/json') !== null) {
       res.status(400).json({ error: 'Bad request' });
     } else {
-      const { id } = req.params;
-      const reader = await Reader.findOne({
-        where: { id: id },
-        raw: true,
-        attributes: ['name', 'email', 'id'],
-      });
-
-      if (reader == null) {
-        res.status(404).json({ error: 'User does not exist' });
-      } else {
-        req.body = reader;
-        res.status(200).json(reader);
-      }
+      await findItem(Reader, req, res);
     }
   } catch (error) {
     handleError(error, res);

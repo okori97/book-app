@@ -1,20 +1,13 @@
 import { Book } from '../models/index.js';
 import handleError from '../utils/functions/handleError.js';
+import { createItem, findItem } from '../utils/functions/queries.js';
 
 export const createBook = async (req, res) => {
   try {
     if (!req.is('application/json') && req.is('application/json') !== null) {
       res.status(400).json({ error: 'Bad request' });
     } else {
-      const { title, author, genre, ISBN } = req.body || null;
-      const newReader = await Book.create({
-        title: title,
-        author: author,
-        genre: genre,
-        ISBN: ISBN,
-      });
-
-      res.status(201).json(newReader);
+      await createItem(Book, req, res);
     }
   } catch (error) {
     handleError(error, res);
@@ -26,13 +19,7 @@ export const findAll = async (req, res) => {
     if (!req.is('application/json') && req.is('application/json') !== null) {
       res.status(400).json({ error: 'Bad request' });
     } else {
-      const books = await Book.findAll({
-        raw: true,
-        attributes: ['title', 'author', 'genre', 'ISBN', 'id'],
-      });
-      books.length == 0
-        ? res.status(404).json({ error: 'No books found!' })
-        : res.json(books);
+      await findItem(Book, req, res);
     }
   } catch (error) {
     handleError(error, res);
@@ -41,10 +28,7 @@ export const findAll = async (req, res) => {
 
 export const findBook = async (req, res) => {
   try {
-    const book = await Book.findByPk(req.params.id);
-    book != null
-      ? res.json(book)
-      : res.status(404).json({ error: 'Book not found' });
+    await findItem(Book, req, res);
   } catch (error) {
     handleError(error, res);
   }
