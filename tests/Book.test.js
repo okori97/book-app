@@ -40,6 +40,28 @@ describe('/Books', () => {
         expect(response.status).to.equal(400);
         expect(response.body.error).to.eql('Bad request');
       });
+
+      it('returns an error message if the book title does not exist', async () => {
+        const response = await request(app).post('/books').send({
+          author: 'Franz Kafka',
+          genre: 'Surreal',
+          ISBN: 'GB29 NWBK 6016 1331 9268 19',
+        });
+
+        expect(response.status).to.equal(400);
+        expect(response.body.error).to.equal('Please input a title');
+      });
+
+      it('returns an error message if the author does not exist', async () => {
+        const response = await request(app).post('/books').send({
+          title: 'The Trial',
+          genre: 'Surreal',
+          ISBN: 'GB29 NWBK 6016 1331 9268 19',
+        });
+
+        expect(response.status).to.equal(400);
+        expect(response.body.error).to.equal('Please input an author name');
+      });
     });
   });
 
@@ -82,7 +104,7 @@ describe('/Books', () => {
       });
 
       it('returns a 404 if there are no books in the database', async () => {
-        Book.destroy({ where: {} });
+        await Book.destroy({ where: {} });
         const response = await request(app).get('/books');
 
         expect(response.status).to.equal(404);
