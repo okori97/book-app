@@ -1,6 +1,10 @@
 import { Book } from '../models/index.js';
 import handleError from '../utils/functions/handleError.js';
-import { createItem, findItem } from '../utils/functions/queries.js';
+import {
+  createItem,
+  findItem,
+  updateItem,
+} from '../utils/functions/queries.js';
 
 export const createBook = async (req, res) => {
   try {
@@ -39,14 +43,7 @@ export const updateBook = async (req, res) => {
     if (!req.is('application/json') && req.is('application/json') !== null) {
       res.status(400).json({ error: 'Bad request' });
     } else {
-      const updatedBook = await Book.update(
-        { title: `${req.body.title}` },
-        { where: { id: `${req.params.id}` } }
-      );
-
-      updatedBook != false
-        ? res.json(updatedBook)
-        : res.status(404).json({ error: 'Book not found!' });
+      updateItem(Book, req, res);
     }
   } catch (error) {
     handleError(error, res);

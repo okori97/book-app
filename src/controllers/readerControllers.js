@@ -1,6 +1,10 @@
 import { Reader } from '../models/index.js';
 import handleError from '../utils/functions/handleError.js';
-import { createItem, findItem } from '../utils/functions/queries.js';
+import {
+  createItem,
+  findItem,
+  updateItem,
+} from '../utils/functions/queries.js';
 
 export const createReader = async (req, res) => {
   try {
@@ -41,19 +45,7 @@ export const updateReader = async (req, res) => {
     if (!req.is('application/json') && req.is('application/json') !== null) {
       res.status(400).json({ error: 'Bad request' });
     } else {
-      const { id } = req.params;
-      const { name } = req.body;
-
-      const updatedRecord = await Reader.update(
-        { name: `${name}` },
-        { where: { id: id } }
-      );
-
-      if (updatedRecord == false) {
-        res.status(404).json({ error: 'User does not exist' });
-      } else {
-        res.json({ success: 'User updated' });
-      }
+      updateItem(Reader, req, res);
     }
   } catch (error) {
     handleError(error, res);
@@ -68,7 +60,7 @@ export const deleteReader = async (req, res) => {
       const { id } = req.params;
       const deletion = await Reader.destroy({ where: { id: id } });
       if (deletion == false) {
-        res.status(404).json({ error: 'User does not exist' });
+        res.status(404).json({ error: 'User not found' });
       } else {
         res.json({ success: 'User deleted' });
       }
