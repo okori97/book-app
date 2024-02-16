@@ -37,7 +37,7 @@ const findItem = async (model, req, res) => {
           attributes: ['title', 'author', 'genre', 'ISBN', 'id'],
         });
         books.length == 0
-          ? res.status(404).json({ error: 'No books found!' })
+          ? res.status(404).json({ error: 'No books found' })
           : res.json(books);
       } else {
         const book = await model.findByPk(req.params.id);
@@ -64,7 +64,7 @@ const findItem = async (model, req, res) => {
 
         reader != null
           ? res.json(reader)
-          : res.status(404).json({ error: 'User not found!' });
+          : res.status(404).json({ error: 'User not found' });
       }
       break;
     }
@@ -86,7 +86,7 @@ const updateItem = async (model, req, res) => {
       );
 
       updatedBook == false
-        ? res.status(404).json({ error: 'Book not found!' })
+        ? res.status(404).json({ error: 'Book not found' })
         : res.json({ success: 'User updated' });
       break;
     }
