@@ -105,6 +105,21 @@ describe('/Readers', () => {
           'Password must be more than 8 characters'
         );
       });
+
+      it('does not return password from API', async () => {
+        const response = await request(app).post('/readers').send({
+          name: 'Okori McCalla',
+          email: 'okori@gmail.com',
+          password: 'password123',
+        });
+
+        const checkPasswordInDb = await Reader.findOne({
+          where: { password: 'password123' },
+        });
+        expect(checkPasswordInDb.name).to.eql('Okori McCalla');
+        expect(response.status).to.equal(201);
+        expect(response.body.password).to.equal(undefined);
+      });
     });
   });
 
@@ -143,6 +158,13 @@ describe('/Readers', () => {
         });
       });
 
+      it('does not return password from API', async () => {
+        const response = await request(app).get('/readers');
+
+        expect(response.status).to.equal(200);
+        expect(response.body.password).to.equal(undefined);
+      });
+
       it('returns a 404 if there are no users in the database', async () => {
         await Reader.destroy({ truncate: true });
         const response = await request(app).get('/readers');
@@ -160,6 +182,14 @@ describe('/Readers', () => {
         expect(response.status).to.equal(200);
         expect(expected.name).to.equal(response.body.name);
         expect(expected.email).to.equal(response.body.email);
+      });
+
+      it('does not return password from API', async () => {
+        const idParam = readers[0].id;
+        const response = await request(app).get(`/readers/${idParam}`);
+
+        expect(response.status).to.equal(200);
+        expect(response.body.password).to.equal(undefined);
       });
 
       it('returns a 404 if the user does not exist', async () => {
@@ -201,6 +231,16 @@ describe('/Readers', () => {
 
         expect(response.body.error).to.eql('Bad request');
         expect(response.status).to.equal(400);
+      });
+
+      it('does not return password from API', async () => {
+        const idParam = readers[0].id;
+        const response = await request(app)
+          .patch(`/readers/${idParam}`)
+          .send({ name: 'Martin' });
+
+        expect(response.status).to.equal(200);
+        expect(response.body.password).to.equal(undefined);
       });
     });
 
