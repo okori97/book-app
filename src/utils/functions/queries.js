@@ -25,7 +25,14 @@ const createItem = async (model, req, res) => {
       break;
     }
     case 'Genre': {
-      console.log('Genre model seen');
+      let { title, author, genre, ISBN } = req.body || null;
+      let Genre;
+      title == null || author == null
+        ? ''
+        : (Genre = await model.create({
+            genre: genre,
+          }));
+
       break;
     }
     default:
