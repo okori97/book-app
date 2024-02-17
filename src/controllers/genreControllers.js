@@ -1,5 +1,25 @@
+import { Genre } from '../models/index.js';
+import {
+  requestError,
+  isContentTypeJson,
+  modelError,
+} from '../utils/functions/validation.js';
+
+import {
+  createItem,
+  deleteItem,
+  updateItem,
+  findItem,
+} from '../utils/functions/queries.js';
+
 export const createGenre = async (req, res, next) => {
-  console.log('Second controller works');
-  console.log('Second: ', req.body);
+  try {
+    isContentTypeJson(req)
+      ? await createItem(Genre, req, res)
+      : requestError(res);
+  } catch (error) {
+    modelError(error);
+  }
+
   next();
 };

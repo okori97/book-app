@@ -24,6 +24,10 @@ const createItem = async (model, req, res) => {
       res.status(201).json(reader);
       break;
     }
+    case 'Genre': {
+      console.log('Genre model seen');
+      break;
+    }
     default:
       break;
   }
