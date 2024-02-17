@@ -1,4 +1,5 @@
 import express from 'express';
+import genreRouter from './genres.js';
 import {
   findAll,
   createBook,
@@ -6,7 +7,9 @@ import {
   updateBook,
   deleteBook,
 } from '../controllers/bookControllers.js';
+
 const bookRouter = express.Router();
+bookRouter.use('/', genreRouter);
 
 bookRouter.get('/', findAll);
 bookRouter.get('/:id', findBook);
