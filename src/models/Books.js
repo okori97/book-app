@@ -1,4 +1,4 @@
-export const BookModel = (connection, DataTypes) => {
+const BookModel = (connection, DataTypes) => {
   const schema = {
     title: {
       type: DataTypes.STRING,
@@ -37,3 +37,5 @@ export const BookModel = (connection, DataTypes) => {
   const BookModel = connection.define('Book', schema);
   return BookModel;
 };
+
+export default BookModel;

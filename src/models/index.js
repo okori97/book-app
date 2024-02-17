@@ -1,6 +1,6 @@
 import { Sequelize } from 'sequelize';
 import ReaderModel from './Reader.js';
-import { BookModel } from './Books.js';
+import BookModel from './Books.js';
 
 let { PGDATABASE, PGUSER, PGHOST, PGPORT, PGPASSWORD } = process.env;
 
