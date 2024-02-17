@@ -17,7 +17,15 @@ const genreModel = (connection, DataTypes) => {
     },
   };
 
-  const genreModel = connection.define('Genre', schema);
+  const options = {
+    defaultScope: {
+      attributes: {
+        exclude: ['createdAt', 'updatedAt'],
+      },
+    },
+  };
+
+  const genreModel = connection.define('Genre', schema, options);
   return genreModel;
 };
 
