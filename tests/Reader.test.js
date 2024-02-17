@@ -20,9 +20,12 @@ describe('/Readers', () => {
           password: 'password123',
         });
 
-        const newReader = await Reader.findByPk(response.body.id, {
-          raw: true,
-        });
+        const newReader = await Reader.scope('withPassword').findByPk(
+          response.body.id,
+          {
+            raw: true,
+          }
+        );
 
         expect(response.status).to.equal(201);
         expect(response.body.name).to.equal('Okori McCalla');

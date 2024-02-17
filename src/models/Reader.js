@@ -50,6 +50,18 @@ const ReaderModel = (connection, DataTypes) => {
         delete reader.dataValues.password;
       },
     },
+    defaultScope: {
+      attributes: {
+        exclude: ['password'],
+      },
+    },
+    scopes: {
+      withPassword: {
+        attributes: {
+          include: ['password'],
+        },
+      },
+    },
   };
 
   const ReaderModel = connection.define('Reader', schema, options);
