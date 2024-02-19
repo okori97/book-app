@@ -33,7 +33,7 @@ const findItemByID = async (model, req, res) => {
 
   const item = await Model.findByPk(req.params.id);
   item == null
-    ? res.status(404).json({ error: 'No books found' })
+    ? res.status(404).json({ error: `${model} not found` })
     : res.json(item);
 };
 
@@ -47,29 +47,12 @@ const updateItem = async (model, req, res) => {
 };
 
 const deleteItem = async (model, req, res) => {
-  res.json({});
-  //   switch (model.name) {
-  //     case 'Book': {
-  //       const deleteBook = await model.destroy({
-  //         where: { id: `${req.params.id}` },
-  //       });
-  //       deleteBook != false
-  //         ? res.json({ success: 'Book deleted' })
-  //         : res.status(404).json({ error: 'Book not found' });
-  //       break;
-  //     }
-  //     case 'Reader': {
-  //       const deleteReader = await model.destroy({
-  //         where: { id: `${req.params.id}` },
-  //       });
-  //       deleteReader != false
-  //         ? res.json({ success: 'User deleted' })
-  //         : res.status(404).json({ error: 'User not found' });
-  //       break;
-  //     }
-  //     default:
-  //       break;
-  //   }
+  const Model = getModel(model);
+
+  const item = await Model.destroy({ where: { id: req.params.id } });
+  item != false
+    ? res.json({ success: `${model} deleted` })
+    : res.status(404).json({ error: `${model} not found` });
 };
 
 export { createItem, findItem, findItemByID, updateItem, deleteItem };
