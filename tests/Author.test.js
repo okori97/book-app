@@ -25,7 +25,7 @@ describe('/Authors', () => {
 
         expect(response.status).to.equal(201);
         expect(newAuthor).to.not.eql(null);
-        expect(newAuthor.author).to.eql('Surreal');
+        expect(newAuthor.author).to.eql('Franz Kafka');
       });
 
       it('returns an 400 if no author provided', async () => {
