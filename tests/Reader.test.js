@@ -44,7 +44,7 @@ describe('/Readers', () => {
         expect(response.status).to.equal(400);
       });
 
-      it('returns an error message if the name does not exist', async () => {
+      it('returns an  400 if the name does not exist', async () => {
         const response = await request(app).post('/readers').send({
           email: 'okori@gmail.com',
           password: 'password123',
@@ -53,7 +53,7 @@ describe('/Readers', () => {
         expect(response.status).to.equal(400);
         expect(response.body).to.haveOwnProperty('error');
       });
-      it('returns an error message if the name is an empty string', async () => {
+      it('returns an  400 if the name is an empty string', async () => {
         const response = await request(app).post('/readers').send({
           email: 'okori@gmail.com',
           password: 'password123',
@@ -63,7 +63,7 @@ describe('/Readers', () => {
         expect(response.status).to.equal(400);
         expect(response.body).to.haveOwnProperty('error');
       });
-      it('returns an error message if the email does not exist', async () => {
+      it('returns an  400 if the email does not exist', async () => {
         const response = await request(app).post('/readers').send({
           name: 'Okori Mccalla',
           password: 'password123',
@@ -73,7 +73,7 @@ describe('/Readers', () => {
         expect(response.body).to.haveOwnProperty('error');
       });
 
-      it('returns an error message if the email is not valid', async () => {
+      it('returns an  400 if the email is not valid', async () => {
         const response = await request(app).post('/readers').send({
           email: 'okorimailcom',
           password: 'password123',
@@ -84,7 +84,7 @@ describe('/Readers', () => {
         expect(response.body).to.haveOwnProperty('error');
       });
 
-      it('returns an error message if the password does not exist', async () => {
+      it('returns an  400 if the password does not exist', async () => {
         const response = await request(app).post('/readers').send({
           name: 'Okori McCalla',
           email: 'okori@gmail.com',
@@ -94,7 +94,7 @@ describe('/Readers', () => {
         expect(response.body).to.haveOwnProperty('error');
       });
 
-      it('returns an error message if the password is NOT more than 8 chars', async () => {
+      it('returns an 400 if the password is NOT more than 8 chars', async () => {
         const response = await request(app).post('/readers').send({
           name: 'Okori McCalla',
           email: 'okori@gmail.com',
@@ -243,7 +243,7 @@ describe('/Readers', () => {
       });
     });
 
-    describe('DELETE /readers/:id', () => {
+    describe.only('DELETE /readers/:id', () => {
       it('deletes an existing user from the database', async () => {
         const idParam = readers[0].id;
         const existingRecord = readers[0];

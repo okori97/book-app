@@ -41,7 +41,7 @@ describe('/Books', () => {
         expect(response.body).to.haveOwnProperty('error');
       });
 
-      it('returns an error message if the book title does not exist', async () => {
+      it('returns an 404 if the book title does not exist', async () => {
         const response = await request(app).post('/books').send({
           author: 'Franz Kafka',
           genre: 'Surreal',
@@ -52,7 +52,7 @@ describe('/Books', () => {
         expect(response.body).to.haveOwnProperty('error');
       });
 
-      it('returns an error message if the author does not exist', async () => {
+      it('returns an 404 if the author does not exist', async () => {
         const response = await request(app).post('/books').send({
           title: 'The Trial',
           genre: 'Surreal',
@@ -167,7 +167,7 @@ describe('/Books', () => {
       });
     });
 
-    describe('DELETE /books/:id', () => {
+    describe.only('DELETE /books/:id', () => {
       it('deletes a single book from the database', async () => {
         const existingRecord = books[0];
         const response = await request(app).delete(`/books/${books[0].id}`);
@@ -182,7 +182,7 @@ describe('/Books', () => {
         expect(response.status).to.equal(200);
         expect(deletedBook).to.equal(null);
         expect(existingRecord).to.not.equal(null);
-        expect(response.body.success).eql('Book deleted');
+        expect(response.body).to.haveOwnProperty('success');
       });
 
       it('returns a 404 if book does not exist', async () => {

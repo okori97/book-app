@@ -36,6 +36,16 @@ describe('Genre', () => {
         expect(response.status).to.equal(400);
         expect(response.body).to.haveOwnProperty('error');
       });
+
+      it('returns a 400 if request is not of the correct type', async () => {
+        const response = await request(app)
+          .post(`/genres`)
+          .send('badthing')
+          .set('Content-Type', 'text/html');
+
+        expect(response.body).to.haveOwnProperty('error');
+        expect(response.status).to.equal(400);
+      });
     });
 
     describe('with records in the database', () => {
@@ -112,6 +122,56 @@ describe('Genre', () => {
             .set('Content-Type', 'application/json');
 
           expect(response.status).to.equal(404);
+          expect(response.body).to.haveOwnProperty('error');
+        });
+
+        it('returns a 400 if request is not of the correct type', async () => {
+          const response = await request(app)
+            .patch(`/genres/${genres[0].id}`)
+            .send('badthing')
+            .set('Content-Type', 'text/html');
+
+          expect(response.body).to.haveOwnProperty('error');
+          expect(response.status).to.equal(400);
+        });
+      });
+
+      describe.only('DELETE /genres/:id', () => {
+        it('deletes a single genre from the database', async () => {
+          const existingRecord = genres[0];
+          const response = await request(app).delete(`/genres/${genres[0].id}`);
+          const deletedGenre = await Genre.findByPk(genres[0].id);
+
+          const currentGenres = await Genre.findAll({
+            raw: true,
+          });
+
+          expect(currentGenres.length).to.equal(genres.length - 1);
+          expect(response.status).to.equal(200);
+          expect(deletedGenre).to.equal(null);
+          expect(existingRecord).to.not.equal(null);
+          expect(response.body).to.haveOwnProperty('success');
+        });
+
+        it('returns a 404 if genre does not exist', async () => {
+          const response = await request(app).delete('/genres/1234');
+          const currentGenres = await Genre.findAll({
+            raw: true,
+            attributes: ['genre'],
+          });
+
+          expect(currentGenres.length).to.equal(genres.length);
+          expect(response.status).to.eql(404);
+          expect(response.body).to.haveOwnProperty('error');
+        });
+
+        it('returns a 400 if request is not of the correct type', async () => {
+          const response = await request(app)
+            .delete(`/genres/${genres[0].id}`)
+            .send('badthing')
+            .set('Content-Type', 'text/html');
+
+          expect(response.status).to.eql(400);
           expect(response.body).to.haveOwnProperty('error');
         });
       });

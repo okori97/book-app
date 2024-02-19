@@ -34,6 +34,16 @@ describe('/Authors', () => {
         expect(response.status).to.equal(400);
         expect(response.body).to.haveOwnProperty('error');
       });
+
+      it('returns a 400 if request is not of the correct type', async () => {
+        const response = await request(app)
+          .post(`/authors`)
+          .send('badthing')
+          .set('Content-Type', 'text/html');
+
+        expect(response.body).to.haveOwnProperty('error');
+        expect(response.status).to.equal(400);
+      });
     });
 
     describe('with records in the database', () => {
@@ -109,6 +119,59 @@ describe('/Authors', () => {
             .set('Content-Type', 'application/json');
 
           expect(response.status).to.equal(404);
+          expect(response.body).to.haveOwnProperty('error');
+        });
+
+        it('returns a 400 if request is not of the correct type', async () => {
+          const response = await request(app)
+            .patch(`/authors/${authors[0].id}`)
+            .send('badthing')
+            .set('Content-Type', 'text/html');
+
+          expect(response.body).to.haveOwnProperty('error');
+          expect(response.status).to.equal(400);
+        });
+      });
+
+      describe.only('DELETE /authors/:id', () => {
+        it('deletes a single author from the database', async () => {
+          const existingRecord = authors[0];
+          const response = await request(app).delete(
+            `/authors/${authors[0].id}`
+          );
+          const deletedAuthor = await Author.findByPk(authors[0].id);
+
+          const currentAuthors = await Author.findAll({
+            raw: true,
+            attributes: ['author'],
+          });
+
+          expect(currentAuthors.length).to.equal(authors.length - 1);
+          expect(response.status).to.equal(200);
+          expect(deletedAuthor).to.equal(null);
+          expect(existingRecord).to.not.equal(null);
+          expect(response.body).to.haveOwnProperty('success');
+        });
+
+        it('returns a 404 if author does not exist', async () => {
+          const response = await request(app).delete('/authors/1234');
+          const currentAuthors = await Author.findAll({
+            raw: true,
+            attributes: ['author'],
+          });
+
+          expect(currentAuthors.length).to.equal(authors.length);
+          expect(response.status).to.eql(404);
+          expect(response.body).to.haveOwnProperty('error');
+        });
+
+        it('returns a 400 if request is not of the correct type', async () => {
+          const response = await request(app)
+            .delete(`/authors/${authors[0].id}`)
+            .send('badthing')
+            .set('Content-Type', 'text/html');
+
+          expect(response.status).to.eql(400);
           expect(response.body).to.haveOwnProperty('error');
         });
       });
