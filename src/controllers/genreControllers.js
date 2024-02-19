@@ -1,4 +1,3 @@
-import { Genre } from '../models/index.js';
 import {
   requestError,
   isContentTypeJson,
@@ -15,10 +14,10 @@ import {
 export const createGenre = async (req, res, next) => {
   try {
     isContentTypeJson(req)
-      ? await createItem(Genre, req, res)
+      ? await createItem('genre', req, res)
       : requestError(res);
   } catch (error) {
-    modelError(error);
+    modelError(error, res);
   }
 
   next();
@@ -27,10 +26,10 @@ export const createGenre = async (req, res, next) => {
 export const findAll = async (req, res, next) => {
   try {
     isContentTypeJson(req)
-      ? await findItem(Genre, req, res)
+      ? await findItem('genre', req, res)
       : requestError(res);
   } catch (error) {
-    modelError(error);
+    modelError(error, res);
   }
 
   next();
@@ -39,10 +38,10 @@ export const findAll = async (req, res, next) => {
 export const findGenre = async (req, res, next) => {
   try {
     isContentTypeJson(req)
-      ? await findItem(Genre, req, res)
+      ? await findItem('genre', req, res)
       : requestError(res);
   } catch (error) {
-    modelError(error);
+    modelError(error, res);
   }
 
   next();
@@ -50,10 +49,10 @@ export const findGenre = async (req, res, next) => {
 export const updateGenre = async (req, res, next) => {
   try {
     isContentTypeJson(req)
-      ? await updateItem(Genre, req, res)
+      ? await updateItem('genre', req, res)
       : requestError(res);
   } catch (error) {
-    modelError(error);
+    modelError(error, res);
   }
 
   next();
@@ -61,10 +60,10 @@ export const updateGenre = async (req, res, next) => {
 export const deleteGenre = async (req, res, next) => {
   try {
     isContentTypeJson(req)
-      ? await deleteItem(Genre, req, res)
+      ? await deleteItem('genre', req, res)
       : requestError(res);
   } catch (error) {
-    modelError(error);
+    modelError(error, res);
   }
 
   next();

@@ -1,4 +1,3 @@
-import { Book } from '../models/index.js';
 import {
   isContentTypeJson,
   modelError,
@@ -14,7 +13,7 @@ import {
 export const createBook = async (req, res) => {
   try {
     isContentTypeJson(req)
-      ? await createItem(Book, req, res)
+      ? await createItem('book', req, res)
       : requestError(res);
   } catch (error) {
     modelError(error, res);
@@ -23,7 +22,9 @@ export const createBook = async (req, res) => {
 
 export const findAll = async (req, res) => {
   try {
-    isContentTypeJson(req) ? await findItem(Book, req, res) : requestError(res);
+    isContentTypeJson(req)
+      ? await findItem('book', req, res)
+      : requestError(res);
   } catch (error) {
     modelError(error, res);
   }
@@ -31,7 +32,7 @@ export const findAll = async (req, res) => {
 
 export const findBook = async (req, res) => {
   try {
-    await findItem(Book, req, res);
+    await findItem('book', req, res);
   } catch (error) {
     modelError(error, res);
   }
@@ -40,7 +41,7 @@ export const findBook = async (req, res) => {
 export const updateBook = async (req, res) => {
   try {
     isContentTypeJson(req)
-      ? await updateItem(Book, req, res)
+      ? await updateItem('book', req, res)
       : requestError(res);
   } catch (error) {
     modelError(error, res);
@@ -50,7 +51,7 @@ export const updateBook = async (req, res) => {
 export const deleteBook = async (req, res) => {
   try {
     isContentTypeJson(req)
-      ? await deleteItem(Book, req, res)
+      ? await deleteItem('book', req, res)
       : requestError(res);
   } catch (error) {
     modelError(error, res);

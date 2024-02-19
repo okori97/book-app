@@ -1,4 +1,3 @@
-import { Author } from '../models/index.js';
 import {
   requestError,
   isContentTypeJson,
@@ -15,10 +14,10 @@ import {
 export const createAuthor = async (req, res, next) => {
   try {
     isContentTypeJson(req)
-      ? await createItem(Author, req, res)
+      ? await createItem('author', req, res)
       : requestError(res);
   } catch (error) {
-    modelError(error);
+    modelError(error, res);
   }
 
   next();
@@ -27,10 +26,10 @@ export const createAuthor = async (req, res, next) => {
 export const findAll = async (req, res, next) => {
   try {
     isContentTypeJson(req)
-      ? await findItem(Author, req, res)
+      ? await findItem('author', req, res)
       : requestError(res);
   } catch (error) {
-    modelError(error);
+    modelError(error, res);
   }
 
   next();
@@ -39,10 +38,10 @@ export const findAll = async (req, res, next) => {
 export const findAuthor = async (req, res, next) => {
   try {
     isContentTypeJson(req)
-      ? await findItem(Author, req, res)
+      ? await findItem('author', req, res)
       : requestError(res);
   } catch (error) {
-    modelError(error);
+    modelError(error, res);
   }
 
   next();
@@ -51,10 +50,10 @@ export const findAuthor = async (req, res, next) => {
 export const updateAuthor = async (req, res, next) => {
   try {
     isContentTypeJson(req)
-      ? await updateItem(Author, req, res)
+      ? await updateItem('author', req, res)
       : requestError(res);
   } catch (error) {
-    modelError(error);
+    modelError(error, res);
   }
 
   next();
@@ -62,10 +61,10 @@ export const updateAuthor = async (req, res, next) => {
 export const deleteAuthor = async (req, res, next) => {
   try {
     isContentTypeJson(req)
-      ? await deleteItem(Author, req, res)
+      ? await deleteItem('author', req, res)
       : requestError(res);
   } catch (error) {
-    modelError(error);
+    modelError(error, res);
   }
 
   next();

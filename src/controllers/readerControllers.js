@@ -1,4 +1,3 @@
-import { Reader } from '../models/index.js';
 import {
   modelError,
   isContentTypeJson,
@@ -14,7 +13,7 @@ import {
 export const createReader = async (req, res) => {
   try {
     isContentTypeJson(req)
-      ? await createItem(Reader, req, res)
+      ? await createItem('reader', req, res)
       : requestError(res);
   } catch (error) {
     modelError(error, res);
@@ -23,7 +22,7 @@ export const createReader = async (req, res) => {
 
 export const findAll = async (req, res) => {
   try {
-    await findItem(Reader, req, res);
+    await findItem('reader', req, res);
   } catch (error) {
     modelError(error, res);
   }
@@ -32,7 +31,7 @@ export const findAll = async (req, res) => {
 export const findReader = async (req, res) => {
   try {
     isContentTypeJson(req)
-      ? await findItem(Reader, req, res)
+      ? await findItem('reader', req, res)
       : requestError(res);
   } catch (error) {
     modelError(error, res);
@@ -44,7 +43,7 @@ export const findReader = async (req, res) => {
 export const updateReader = async (req, res) => {
   try {
     isContentTypeJson(req)
-      ? await updateItem(Reader, req, res)
+      ? await updateItem('reader', req, res)
       : requestError(res);
   } catch (error) {
     modelError(error, res);
@@ -54,7 +53,7 @@ export const updateReader = async (req, res) => {
 export const deleteReader = async (req, res) => {
   try {
     isContentTypeJson(req)
-      ? await deleteItem(Reader, req, res)
+      ? await deleteItem('reader', req, res)
       : requestError(res);
   } catch (error) {
     modelError(error, res);
