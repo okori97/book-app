@@ -64,7 +64,7 @@ describe('Genre', () => {
         });
       });
 
-      describe('GET /genres:id', () => {
+      describe('GET /genres/:id', () => {
         it('gets a single genre by id', async () => {
           const existing = genres[0];
           const response = await request(app).get(`/genres/${existing.id}`);
@@ -75,6 +75,31 @@ describe('Genre', () => {
 
         it('returns 404 if the genre does not exist', async () => {
           const response = await request(app).get(`/genres/1234`);
+
+          expect(response.status).to.equal(404);
+          expect(response.body).to.haveOwnProperty('error');
+        });
+      });
+
+      describe('PATCH /genres/:id', () => {
+        it('updates an existing genre in the database', async () => {
+          const idParam = genres[0].id;
+          const existingRecord = genres[0];
+          const response = await request(app)
+            .patch(`/genres/${idParam}`)
+            .send({ genre: 'Horror' });
+
+          const updatedRecord = await Genre.findByPk(idParam, { raw: true });
+          expect(response.status).to.equal(200);
+          expect(response.body).to.haveOwnProperty('success');
+          expect(existingRecord.genre).to.not.equal(updatedRecord.genre);
+          expect(updatedRecord.genre).to.equal('Horror');
+        });
+
+        it('returns a 404 if genre does not exist', async () => {
+          const response = await request(app)
+            .patch(`/genres/1234`)
+            .set('Content-Type', 'application/json');
 
           expect(response.status).to.equal(404);
           expect(response.body).to.haveOwnProperty('error');

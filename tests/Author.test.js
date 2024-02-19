@@ -64,7 +64,7 @@ describe('/Authors', () => {
         });
       });
 
-      describe('GET /authors:id', () => {
+      describe('GET /authors/:id', () => {
         it('gets a single author by id', async () => {
           const existing = authors[0];
           const response = await request(app).get(`/authors/${existing.id}`);
@@ -75,6 +75,31 @@ describe('/Authors', () => {
 
         it('returns 404 if the author does not exist', async () => {
           const response = await request(app).get(`/authors/1234`);
+
+          expect(response.status).to.equal(404);
+          expect(response.body).to.haveOwnProperty('error');
+        });
+      });
+
+      describe('PATCH /authors/:id', () => {
+        it('updates an existing author in the database', async () => {
+          const idParam = authors[0].id;
+          const existingRecord = authors[0];
+          const response = await request(app)
+            .patch(`/authors/${idParam}`)
+            .send({ author: 'Horror' });
+
+          const updatedRecord = await Author.findByPk(idParam, { raw: true });
+          expect(response.status).to.equal(200);
+          expect(response.body).to.haveOwnProperty('success');
+          expect(existingRecord.author).to.not.equal(updatedRecord.author);
+          expect(updatedRecord.author).to.equal('Horror');
+        });
+
+        it('returns a 404 if author does not exist', async () => {
+          const response = await request(app)
+            .patch(`/authors/1234`)
+            .set('Content-Type', 'application/json');
 
           expect(response.status).to.equal(404);
           expect(response.body).to.haveOwnProperty('error');
