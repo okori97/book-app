@@ -53,7 +53,14 @@ describe('/Authors', () => {
           const response = await request(app).get('/authors');
 
           expect(response.status).to.equal(200);
-          expect(response.body[0]).to.eql(authors);
+          expect(response.body.length).to.eql(2);
+
+          response.body.forEach((record) => {
+            const expected = authors.find((author) => {
+              return author.id == record.id;
+            });
+            expect(record.author).to.eql(expected.author);
+          });
         });
         it('returns a 404 if no authors in the database', async () => {
           await Author.destroy({ where: {} });

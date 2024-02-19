@@ -46,6 +46,8 @@ describe('Genre', () => {
           { genre: 'Surreal' },
           { genre: 'Romance' },
         ]);
+
+        genres = genres.map((genre) => getPlainResponse(genre));
       });
 
       describe.only('GET /genre', () => {
@@ -53,8 +55,16 @@ describe('Genre', () => {
           const response = await request(app).get('/genres');
 
           expect(response.status).to.equal(200);
-          expect(response.body[0]).to.eql(genres);
+          expect(response.body.length).to.eql(2);
+
+          response.body.forEach((record) => {
+            const expected = genres.find((genre) => {
+              return genre.id == record.id;
+            });
+            expect(record.genre).to.eql(expected.genre);
+          });
         });
+
         it('returns a 404 if no genres in the database', async () => {
           await Genre.destroy({ where: {} });
           const response = await request(app).get('/genres');
