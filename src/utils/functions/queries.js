@@ -13,7 +13,6 @@ const getModel = (model) => {
 
 const createItem = async (model, req, res) => {
   const Model = getModel(model);
-  console.log(req.body);
   const item = await Model.create(req.body);
   item ? res.status(201).json(item) : '';
 };
@@ -21,7 +20,9 @@ const createItem = async (model, req, res) => {
 const findItem = async (model, req, res) => {
   const Model = getModel(model);
 
-  const item = await Model.findAll();
+  const item = await Model.findAll({
+    attributes: { exclude: ['createdAt', 'updatedAt'] },
+  });
   item.length != 0
     ? res.json(item)
     : res.status(404).json({ error: `No ${model}s found` });
