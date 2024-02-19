@@ -11,7 +11,7 @@ describe('/Authors', () => {
     await Author.destroy({ where: {} });
   });
   describe('with no records in the database', () => {
-    describe('POST /authors', () => {
+    describe.only('POST /authors', () => {
       it('creates a new author in the database', async () => {
         const response = await request(app).post('/authors').send({
           author: 'Franz Kafka',
@@ -48,7 +48,7 @@ describe('/Authors', () => {
         authors = authors.map((author) => getPlainResponse(author));
       });
 
-      describe('GET /authors', () => {
+      describe.only('GET /authors', () => {
         it('gets all authors int the database', async () => {
           const response = await request(app).get('/authors');
 

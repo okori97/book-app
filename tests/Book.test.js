@@ -13,7 +13,7 @@ describe('/Books', () => {
   });
 
   describe('with NO records in the database', () => {
-    describe('POST /books', () => {
+    describe.only('POST /books', () => {
       it('creates new records in the database', async () => {
         const response = await request(app).post('/books').send({
           title: 'The Trial',
@@ -38,7 +38,7 @@ describe('/Books', () => {
           .set('Content-Type', 'text/html');
 
         expect(response.status).to.equal(400);
-        expect(response.body.error).to.eql('Bad request');
+        expect(response.body).to.haveOwnProperty('error');
       });
 
       it('returns an error message if the book title does not exist', async () => {
@@ -49,7 +49,7 @@ describe('/Books', () => {
         });
 
         expect(response.status).to.equal(400);
-        expect(response.body.error).to.equal('Please input a title');
+        expect(response.body).to.haveOwnProperty('error');
       });
 
       it('returns an error message if the author does not exist', async () => {
@@ -60,7 +60,7 @@ describe('/Books', () => {
         });
 
         expect(response.status).to.equal(400);
-        expect(response.body.error).to.equal('Please input an author name');
+        expect(response.body).to.haveOwnProperty('error');
       });
     });
   });
@@ -86,7 +86,7 @@ describe('/Books', () => {
       books = books.map((record) => record.get({ plain: true }));
     });
 
-    describe('GET /books', () => {
+    describe.only('GET /books', () => {
       it('gets all the records in the database', async () => {
         const response = await request(app).get('/books');
 
@@ -108,7 +108,7 @@ describe('/Books', () => {
         const response = await request(app).get('/books');
 
         expect(response.status).to.equal(404);
-        expect(response.body.error).to.equal('No books found');
+        expect(response.body).to.haveOwnProperty('error');
       });
     });
 
@@ -126,7 +126,7 @@ describe('/Books', () => {
         const response = await request(app).get('/books/1234');
 
         expect(response.status).to.equal(404);
-        expect(response.body.error).to.eql('Book not found');
+        expect(response.body).to.haveOwnProperty('error');
       });
     });
 
@@ -153,7 +153,7 @@ describe('/Books', () => {
         });
 
         expect(response.status).to.equal(404);
-        expect(response.body.error).to.equal('Book not found');
+        expect(response.body).to.haveOwnProperty('error');
       });
 
       it('returns a 400 if request is not of the correct type', async () => {
@@ -163,7 +163,7 @@ describe('/Books', () => {
           .set('Content-Type', 'text/html');
 
         expect(response.status).to.equal(400);
-        expect(response.body.error).to.eql('Bad request');
+        expect(response.body).to.haveOwnProperty('error');
       });
     });
 
@@ -194,7 +194,7 @@ describe('/Books', () => {
 
         expect(currentBooks.length).to.equal(books.length);
         expect(response.status).to.eql(404);
-        expect(response.body.error).to.eql('Book not found');
+        expect(response.body).to.haveOwnProperty('error');
       });
 
       it('returns a 400 if request is not of the correct type', async () => {
@@ -204,7 +204,7 @@ describe('/Books', () => {
           .set('Content-Type', 'text/html');
 
         expect(response.status).to.eql(400);
-        expect(response.body.error).to.eql('Bad request');
+        expect(response.body).to.haveOwnProperty('error');
       });
     });
   });

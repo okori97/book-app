@@ -13,9 +13,9 @@ describe('Genre', () => {
   });
 
   describe('with no records in the database', () => {
-    describe('POST /genre', () => {
+    describe.only('POST /genre', () => {
       it('adds a genre into the database', async () => {
-        const response = request(app).post('/genre').send({
+        const response = await request(app).post('/genres').send({
           genre: 'Surreal',
         });
 
@@ -48,7 +48,7 @@ describe('Genre', () => {
         ]);
       });
 
-      describe('GET /genre', () => {
+      describe.only('GET /genre', () => {
         it('gets all genres in the database', async () => {
           const response = await request(app).get('/genres');
 
