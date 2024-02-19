@@ -9,10 +9,11 @@ import {
 
 const readerRoutes = express.Router();
 
-readerRoutes.post('/', createReader);
-readerRoutes.get('/', findAll);
-readerRoutes.get('/:id', findReader);
-readerRoutes.patch('/:id', updateReader);
-readerRoutes.delete('/:id', deleteReader);
+readerRoutes.route('/').get(findAll).post(createReader);
+readerRoutes
+  .route('/:id')
+  .get(findReader)
+  .patch(updateReader)
+  .delete(deleteReader);
 
 export default readerRoutes;

@@ -11,10 +11,7 @@ import {
 const bookRouter = express.Router();
 bookRouter.use('/', genreRouter);
 
-bookRouter.get('/', findAll);
-bookRouter.get('/:id', findBook);
-bookRouter.patch('/:id', updateBook);
-bookRouter.delete('/:id', deleteBook);
-bookRouter.post('/', createBook);
+bookRouter.route('/').get(findAll).post(createBook);
+bookRouter.route('/:id').get(findBook).patch(updateBook).delete(deleteBook);
 
 export default bookRouter;
