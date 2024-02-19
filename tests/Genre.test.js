@@ -25,14 +25,16 @@ describe('Genre', () => {
 
         newGenre = getPlainResponse(newGenre);
 
+        expect(response.status).to.equal(201);
         expect(newGenre).to.not.eql(null);
         expect(newGenre.genre).to.eql('Surreal');
       });
 
       it('returns an 400 if no genre provided', async () => {
-        const response = await request(app).post('genre/').send({});
+        const response = await request(app).post('/genres').send({});
 
         expect(response.status).to.equal(400);
+        expect(response.body).to.haveOwnProperty('error');
       });
     });
 
@@ -46,35 +48,35 @@ describe('Genre', () => {
         ]);
       });
 
-      describe('GET /authors', () => {
+      describe('GET /genre', () => {
         it('gets all genres in the database', async () => {
-          const response = await request(app).get('genre/');
+          const response = await request(app).get('/genres');
 
           expect(response.status).to.equal(200);
           expect(response.body[0]).to.eql(genres);
         });
         it('returns a 404 if no genres in the database', async () => {
           await Genre.destroy({ where: {} });
-          const response = await request(app).get('genre/');
+          const response = await request(app).get('/genres');
 
           expect(response.status).to.equal(404);
           expect(response.body).to.haveOwnProperty('error');
         });
       });
 
-      describe('GET /genre/:id', () => {
+      describe('GET /genres:id', () => {
         it('gets a single genre by id', async () => {
           const existing = genres[0];
-          const response = await request(app).get(`genre/${existing.id}`);
+          const response = await request(app).get(`/genres/${existing.id}`);
 
           expect(response.status).to.equal(200);
           expect(response.body.genre).to.equal(existing.genre);
         });
 
         it('returns 404 if the genre does not exist', async () => {
-          const response = await request(app).get(`genre/1234`);
+          const response = await request(app).get(`/genres/1234`);
 
-          expect(response.status).toString.equal(404);
+          expect(response.status).to.equal(404);
           expect(response.body).to.haveOwnProperty('error');
         });
       });
