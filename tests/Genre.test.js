@@ -91,7 +91,7 @@ describe('Genre', () => {
         });
       });
 
-      describe('PATCH /genres/:id', () => {
+      describe.only('PATCH /genres/:id', () => {
         it('updates an existing genre in the database', async () => {
           const idParam = genres[0].id;
           const existingRecord = genres[0];

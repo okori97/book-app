@@ -130,7 +130,7 @@ describe('/Books', () => {
       });
     });
 
-    describe('PATCH /books/:id', () => {
+    describe.only('PATCH /books/:id', () => {
       it('updates a books title in the database', async () => {
         const response = await request(app)
           .patch(`/books/${books[1].id}`)

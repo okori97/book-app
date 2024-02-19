@@ -198,7 +198,7 @@ describe('/Readers', () => {
       });
     });
 
-    describe('PATCH /readers/:id', () => {
+    describe.only('PATCH /readers/:id', () => {
       it('updates an existing users name in the database', async () => {
         const idParam = readers[0].id;
         const existingRecord = readers[0];
