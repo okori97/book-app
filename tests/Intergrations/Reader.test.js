@@ -4,6 +4,7 @@ import { expect, should, use } from 'chai';
 import { describe, it, beforeEach } from 'mocha';
 import { app } from '../../src/app.js';
 import chaiThings from 'chai-things';
+import { getPlainResponse } from '../test-helpers.js';
 should(use(chaiThings));
 
 describe('/Readers', () => {
@@ -138,7 +139,7 @@ describe('/Readers', () => {
           password: 'password321',
         },
       ]);
-      readers = readers.map((record) => record.get({ plain: true }));
+      readers = readers.map((record) => getPlainResponse(record));
     });
 
     describe.only('GET /readers', () => {

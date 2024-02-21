@@ -4,6 +4,7 @@ import request from 'supertest';
 import { beforeEach, describe, it } from 'mocha';
 import { Book } from '../../src/models/index.js';
 import { app } from '../../src/app.js';
+import { getPlainResponse } from '../test-helpers.js';
 
 should(use(chaiThings));
 
@@ -83,7 +84,7 @@ describe('/Books', () => {
         },
       ]);
 
-      books = books.map((record) => record.get({ plain: true }));
+      books = books.map((record) => getPlainResponse(record));
     });
 
     describe.only('GET /books', () => {
