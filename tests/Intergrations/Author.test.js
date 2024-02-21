@@ -1,10 +1,10 @@
 import { expect, should, use } from 'chai';
 import chaiThings from 'chai-things';
 import request from 'supertest';
-import { getPlainResponse } from './test-helpers.js';
+import { getPlainResponse } from '../test-helpers.js';
 import { beforeEach, describe, it } from 'mocha';
-import { Author } from '../src/models/index.js';
-import { app } from '../src/app.js';
+import { Author } from '../../src/models/index.js';
+import { app } from '../../src/app.js';
 
 describe('/Authors', () => {
   beforeEach(async () => {

@@ -2,8 +2,8 @@ import { expect, should, use } from 'chai';
 import chaiThings from 'chai-things';
 import request from 'supertest';
 import { beforeEach, describe, it } from 'mocha';
-import { Book } from '../src/models/index.js';
-import { app } from '../src/app.js';
+import { Book } from '../../src/models/index.js';
+import { app } from '../../src/app.js';
 
 should(use(chaiThings));
 

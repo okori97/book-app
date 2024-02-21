@@ -1,10 +1,10 @@
 import request from 'supertest';
-import { getPlainResponse } from './test-helpers.js';
+import { getPlainResponse } from '../test-helpers.js';
 import { beforeEach, describe, it, afterEach } from 'mocha';
 import { expect, should, use } from 'chai';
 import chaiThings from 'chai-things';
-import { app } from '../src/app.js';
-import { Genre } from '../src/models/index.js';
+import { app } from '../../src/app.js';
+import { Genre } from '../../src/models/index.js';
 should(use(chaiThings));
 
 describe('Genre', () => {

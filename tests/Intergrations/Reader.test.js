@@ -1,8 +1,8 @@
-import { Reader } from '../src/models/index.js';
+import { Reader } from '../../src/models/index.js';
 import request from 'supertest';
 import { expect, should, use } from 'chai';
 import { describe, it, beforeEach } from 'mocha';
-import { app } from '../src/app.js';
+import { app } from '../../src/app.js';
 import chaiThings from 'chai-things';
 should(use(chaiThings));
 
