@@ -8,13 +8,13 @@ const modelError = (error, res) => {
 };
 
 const isContentTypeJson = (req) => {
-  let ans;
-  !req.is('application/json')
-    ? req.is('application/json') !== null
-      ? (ans = false)
-      : (ans = true)
-    : (ans = true);
-  return ans;
+  let isTypeJson;
+  if (!req.is('application/json') && req.is('application/json') !== null) {
+    isTypeJson = false;
+  } else {
+    isTypeJson = true;
+  }
+  return isTypeJson;
 };
 
 const requestError = (res) => {
