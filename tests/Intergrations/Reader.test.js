@@ -13,7 +13,7 @@ describe('/Readers', () => {
   });
 
   describe('with no records in the database', () => {
-    describe.only('POST /readers', () => {
+    describe('POST /readers', () => {
       it('creates new records in the database', async () => {
         const response = await request(app).post('/readers').send({
           name: 'Okori McCalla',
@@ -33,6 +33,15 @@ describe('/Readers', () => {
         expect(newReader.email).to.equal('okori@gmail.com');
         expect(newReader.name).to.equal('Okori McCalla');
         expect(newReader.password).to.equal('password123');
+      });
+
+      it('returns a 400 if the request body is empty', async () => {
+        const response = await request(app)
+          .post('/readers')
+          .send({ name: 'name' });
+
+        expect(response.status).to.eql(400);
+        expect(response.body).to.haveOwnProperty('error');
       });
 
       it('returns a 400 if request is not of the correct type', async () => {
@@ -142,7 +151,7 @@ describe('/Readers', () => {
       readers = readers.map((record) => getPlainResponse(record));
     });
 
-    describe.only('GET /readers', () => {
+    describe('GET /readers', () => {
       it('gets all records in the database', async () => {
         const response = await request(app).get('/readers');
 
@@ -199,7 +208,7 @@ describe('/Readers', () => {
       });
     });
 
-    describe.only('PATCH /readers/:id', () => {
+    describe('PATCH /readers/:id', () => {
       it('updates an existing users name in the database', async () => {
         const idParam = readers[0].id;
         const existingRecord = readers[0];
@@ -244,7 +253,7 @@ describe('/Readers', () => {
       });
     });
 
-    describe.only('DELETE /readers/:id', () => {
+    describe('DELETE /readers/:id', () => {
       it('deletes an existing user from the database', async () => {
         const idParam = readers[0].id;
         const existingRecord = readers[0];
