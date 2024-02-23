@@ -1,10 +1,10 @@
-const modelError = (error, res) => {
-  const validationError =
-    error.errors[0].message || error.errors[0].ValidationErrorItem.message;
+const modelError = ({ errors }, res) => {
+  let errorMessage;
 
-  validationError
-    ? res.status(400).json({ error: `${validationError}` })
-    : res.status(500).json({ error: error });
+  errorMessage = handleMultipleErrors(errors, errorMessage);
+  errorMessage
+    ? res.status(400).json({ error: `${errorMessage}` })
+    : res.status(500).json({ error: errors });
 };
 
 const isContentTypeJson = (req) => {
@@ -22,3 +22,19 @@ const requestError = (res) => {
 };
 
 export { modelError, isContentTypeJson, requestError };
+function handleMultipleErrors(errors, errorMessage) {
+  errorMessage = [];
+  if (errors.length > 1) {
+    errors.map((error) => {
+      errorMessage.push(error.path);
+    });
+  } else {
+    errors.map((error) => {
+      errorMessage.push(error.message);
+    });
+  }
+  errorMessage.length > 1
+    ? (errorMessage = 'Please input a valid ' + errorMessage.join(' and '))
+    : (errorMessage = errorMessage.join());
+  return errorMessage;
+}
