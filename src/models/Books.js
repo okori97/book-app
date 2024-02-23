@@ -15,22 +15,6 @@ const BookModel = (connection, DataTypes) => {
         },
       },
     },
-    author: {
-      type: DataTypes.STRING,
-      unique: true,
-      allowNull: false,
-      validate: {
-        notNull: {
-          args: true,
-          msg: 'Please input an author name',
-        },
-        notEmpty: {
-          true: true,
-          msg: 'Please input a valid author name',
-        },
-      },
-    },
-    genre: DataTypes.STRING,
     ISBN: DataTypes.STRING,
   };
 
