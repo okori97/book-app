@@ -1,10 +1,12 @@
 import { Reader } from '../../src/models/index.js';
 import request from 'supertest';
 import { expect, should, use } from 'chai';
-import { describe, it, beforeEach } from 'mocha';
+import { describe, it, beforeEach, before } from 'mocha';
 import { app } from '../../src/app.js';
 import chaiThings from 'chai-things';
 import { getPlainResponse } from '../test-helpers.js';
+import { dummyReader } from '../../src/utils/fake-data.js';
+
 should(use(chaiThings));
 
 describe('/Readers', () => {
@@ -13,13 +15,11 @@ describe('/Readers', () => {
   });
 
   describe('with no records in the database', () => {
+    let fakeReader = dummyReader();
+
     describe('POST /readers', () => {
       it('creates new records in the database', async () => {
-        const response = await request(app).post('/readers').send({
-          name: 'Okori McCalla',
-          email: 'okori@gmail.com',
-          password: 'password123',
-        });
+        const response = await request(app).post('/readers').send(fakeReader);
 
         const newReader = await Reader.scope('withPassword').findByPk(
           response.body.id,
@@ -29,10 +29,10 @@ describe('/Readers', () => {
         );
 
         expect(response.status).to.equal(201);
-        expect(response.body.name).to.equal('Okori McCalla');
-        expect(newReader.email).to.equal('okori@gmail.com');
-        expect(newReader.name).to.equal('Okori McCalla');
-        expect(newReader.password).to.equal('password123');
+        expect(response.body.name).to.equal(fakeReader.name);
+        expect(newReader.email).to.equal(fakeReader.email);
+        expect(newReader.name).to.equal(fakeReader.name);
+        expect(newReader.password).to.equal(fakeReader.password);
       });
 
       it('returns a 400 if the request body is empty', async () => {
@@ -136,18 +136,7 @@ describe('/Readers', () => {
     let readers;
 
     beforeEach(async () => {
-      readers = await Reader.bulkCreate([
-        {
-          name: 'Okori McCalla',
-          email: 'okori@gmail.com',
-          password: 'password123',
-        },
-        {
-          name: 'Patrick Batemen',
-          email: 'patrick@gmail.com',
-          password: 'password321',
-        },
-      ]);
+      readers = await Reader.bulkCreate([dummyReader(), dummyReader()]);
       readers = readers.map((record) => getPlainResponse(record));
     });
 

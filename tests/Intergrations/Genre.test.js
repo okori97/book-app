@@ -5,6 +5,7 @@ import { expect, should, use } from 'chai';
 import chaiThings from 'chai-things';
 import { app } from '../../src/app.js';
 import { Genre } from '../../src/models/index.js';
+import { dummyGenre } from '../../src/utils/fake-data.js';
 should(use(chaiThings));
 
 describe('Genre', () => {
@@ -13,21 +14,20 @@ describe('Genre', () => {
   });
 
   describe('with no records in the database', () => {
+    let fakeGenre = dummyGenre();
     describe('POST /genre', () => {
       it('adds a genre into the database', async () => {
-        const response = await request(app).post('/genres').send({
-          genre: 'Surreal',
-        });
+        const response = await request(app).post('/genres').send(fakeGenre);
 
         let newGenre = await Genre.findOne({
-          where: { genre: 'Surreal' },
+          where: { genre: fakeGenre.genre },
         });
 
         newGenre = getPlainResponse(newGenre);
 
         expect(response.status).to.equal(201);
         expect(newGenre).to.not.eql(null);
-        expect(newGenre.genre).to.eql('Surreal');
+        expect(newGenre.genre).to.eql(fakeGenre.genre);
       });
 
       it('returns an 400 if no genre provided', async () => {
@@ -52,10 +52,7 @@ describe('Genre', () => {
       let genres;
 
       beforeEach(async () => {
-        genres = await Genre.bulkCreate([
-          { genre: 'Surreal' },
-          { genre: 'Romance' },
-        ]);
+        genres = await Genre.bulkCreate([dummyGenre(), dummyGenre()]);
 
         genres = genres.map((genre) => getPlainResponse(genre));
       });

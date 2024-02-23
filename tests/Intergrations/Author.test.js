@@ -5,27 +5,26 @@ import { getPlainResponse } from '../test-helpers.js';
 import { beforeEach, describe, it } from 'mocha';
 import { Author } from '../../src/models/index.js';
 import { app } from '../../src/app.js';
+import { dummyAuthor } from '../../src/utils/fake-data.js';
 
 describe('/Authors', () => {
   beforeEach(async () => {
     await Author.destroy({ where: {} });
   });
   describe('with no records in the database', () => {
+    let fakeAuthor = dummyAuthor();
     describe('POST /authors', () => {
       it('creates a new author in the database', async () => {
-        const response = await request(app).post('/authors').send({
-          author: 'Franz Kafka',
-        });
-
+        const response = await request(app).post('/authors').send(fakeAuthor);
         let newAuthor = await Author.findOne({
-          where: { author: 'Franz Kafka' },
+          where: { author: fakeAuthor.author },
         });
 
         newAuthor = getPlainResponse(newAuthor);
 
         expect(response.status).to.equal(201);
         expect(newAuthor).to.not.eql(null);
-        expect(newAuthor.author).to.eql('Franz Kafka');
+        expect(newAuthor.author).to.eql(fakeAuthor.author);
       });
 
       it('returns an 400 if no author provided', async () => {
@@ -50,10 +49,7 @@ describe('/Authors', () => {
       let authors;
 
       beforeEach(async () => {
-        authors = await Author.bulkCreate([
-          { author: 'Franz Kafka' },
-          { author: 'David F. Wallace' },
-        ]);
+        authors = await Author.bulkCreate([dummyAuthor(), dummyAuthor()]);
 
         authors = authors.map((author) => getPlainResponse(author));
       });
