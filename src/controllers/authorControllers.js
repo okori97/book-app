@@ -8,6 +8,7 @@ import {
   createItem,
   deleteItem,
   findItem,
+  findItemByID,
   updateItem,
 } from '../utils/functions/queries.js';
 
@@ -38,7 +39,7 @@ export const findAll = async (req, res, next) => {
 export const findAuthor = async (req, res, next) => {
   try {
     isContentTypeJson(req)
-      ? await findItem('author', req, res)
+      ? await findItemByID('author', req, res)
       : requestError(res);
   } catch (error) {
     modelError(error, res);

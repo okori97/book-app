@@ -7,6 +7,7 @@ import {
   createItem,
   deleteItem,
   findItem,
+  findItemByID,
   updateItem,
 } from '../utils/functions/queries.js';
 
@@ -31,7 +32,7 @@ export const findAll = async (req, res) => {
 export const findReader = async (req, res) => {
   try {
     isContentTypeJson(req)
-      ? await findItem('reader', req, res)
+      ? await findItemByID('reader', req, res)
       : requestError(res);
   } catch (error) {
     modelError(error, res);

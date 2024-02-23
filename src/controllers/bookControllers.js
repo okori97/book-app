@@ -7,6 +7,7 @@ import {
   createItem,
   deleteItem,
   findItem,
+  findItemByID,
   updateItem,
 } from '../utils/functions/queries.js';
 
@@ -32,7 +33,7 @@ export const findAll = async (req, res) => {
 
 export const findBook = async (req, res) => {
   try {
-    await findItem('book', req, res);
+    await findItemByID('book', req, res);
   } catch (error) {
     modelError(error, res);
   }
