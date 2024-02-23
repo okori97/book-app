@@ -13,7 +13,7 @@ describe('Genre', () => {
   });
 
   describe('with no records in the database', () => {
-    describe.only('POST /genre', () => {
+    describe('POST /genre', () => {
       it('adds a genre into the database', async () => {
         const response = await request(app).post('/genres').send({
           genre: 'Surreal',
@@ -60,7 +60,7 @@ describe('Genre', () => {
         genres = genres.map((genre) => getPlainResponse(genre));
       });
 
-      describe.only('GET /genre', () => {
+      describe('GET /genre', () => {
         it('gets all genres in the database', async () => {
           const response = await request(app).get('/genres');
 
@@ -101,7 +101,7 @@ describe('Genre', () => {
         });
       });
 
-      describe.only('PATCH /genres/:id', () => {
+      describe('PATCH /genres/:id', () => {
         it('updates an existing genre in the database', async () => {
           const idParam = genres[0].id;
           const existingRecord = genres[0];
@@ -136,7 +136,7 @@ describe('Genre', () => {
         });
       });
 
-      describe.only('DELETE /genres/:id', () => {
+      describe('DELETE /genres/:id', () => {
         it('deletes a single genre from the database', async () => {
           const existingRecord = genres[0];
           const response = await request(app).delete(`/genres/${genres[0].id}`);

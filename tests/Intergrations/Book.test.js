@@ -14,7 +14,7 @@ describe('/Books', () => {
   });
 
   describe('with NO records in the database', () => {
-    describe.only('POST /books', () => {
+    describe('POST /books', () => {
       it('creates new records in the database', async () => {
         const response = await request(app).post('/books').send({
           title: 'The Trial',
@@ -87,7 +87,7 @@ describe('/Books', () => {
       books = books.map((record) => getPlainResponse(record));
     });
 
-    describe.only('GET /books', () => {
+    describe('GET /books', () => {
       it('gets all the records in the database', async () => {
         const response = await request(app).get('/books');
 
@@ -131,7 +131,7 @@ describe('/Books', () => {
       });
     });
 
-    describe.only('PATCH /books/:id', () => {
+    describe('PATCH /books/:id', () => {
       it('updates a books title in the database', async () => {
         const response = await request(app)
           .patch(`/books/${books[1].id}`)
@@ -168,7 +168,7 @@ describe('/Books', () => {
       });
     });
 
-    describe.only('DELETE /books/:id', () => {
+    describe('DELETE /books/:id', () => {
       it('deletes a single book from the database', async () => {
         const existingRecord = books[0];
         const response = await request(app).delete(`/books/${books[0].id}`);
