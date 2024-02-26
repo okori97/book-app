@@ -91,9 +91,9 @@ describe('/Books', () => {
           const expected = books.find((book) => {
             return book.id == record.id;
           });
-
-          expect(record.title).eql(expected.title);
-          expect(record.author).eql(expected.author);
+          expect(record.title).to.equal(expected.title);
+          expect(record.GenreId).to.equal(expected.GenreId);
+          expect(record.AuthorId).eql(expected.AuthorId);
         });
       });
 
