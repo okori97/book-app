@@ -17,8 +17,15 @@ const BookModel = (connection, DataTypes) => {
     },
     ISBN: DataTypes.STRING,
   };
+  const options = {
+    defaultScope: {
+      attributes: {
+        exclude: ['createdAt', 'updatedAt'],
+      },
+    },
+  };
 
-  const BookModel = connection.define('Book', schema);
+  const BookModel = connection.define('Book', schema, options);
   return BookModel;
 };
 

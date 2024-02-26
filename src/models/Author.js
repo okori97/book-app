@@ -16,8 +16,15 @@ const authorModel = (connection, DataTypes) => {
       },
     },
   };
+  const options = {
+    defaultScope: {
+      attributes: {
+        exclude: ['createdAt', 'updatedAt'],
+      },
+    },
+  };
 
-  const authorModel = connection.define('Author', schema);
+  const authorModel = connection.define('Author', schema, options);
   return authorModel;
 };
 
