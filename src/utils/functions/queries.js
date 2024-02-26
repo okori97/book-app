@@ -1,4 +1,5 @@
 import { Book, Author, Reader, Genre } from '../../models/index.js';
+import { get404Error, get400Error } from './validation.js';
 
 const getModel = (model) => {
   const models = {
@@ -13,8 +14,9 @@ const getModel = (model) => {
 
 const includeAssociations = (model) => {
   const associations = {
-    book: [Genre],
+    book: [Genre, Author],
     genre: [Book],
+    author: [Book],
   };
 
   return associations[model] || [];
@@ -22,9 +24,13 @@ const includeAssociations = (model) => {
 
 const createItem = async (model, req, res) => {
   const Model = getModel(model);
-  return await Model.create(req.body).then((item) => {
-    res.status(201).json(item);
-  });
+  return await Model.create(req.body)
+    .then((item) => {
+      res.status(201).json(item);
+    })
+    .catch((error) => {
+      get400Error(error, res);
+    });
 };
 
 const findItem = async (model, req, res) => {
@@ -33,11 +39,15 @@ const findItem = async (model, req, res) => {
   return await Model.findAll({
     include: includeAssociations(model),
     attributes: { exclude: ['createdAt', 'updatedAt'] },
-  }).then((item) => {
-    item.length != 0
-      ? res.json(item)
-      : res.status(404).json({ error: `No ${model}s found` });
-  });
+  })
+    .then((item) => {
+      item.length != 0
+        ? res.json(item)
+        : res.status(404).json(get404Error(model));
+    })
+    .catch((error) => {
+      get400Error(error, res);
+    });
 };
 
 const findItemByID = async (model, req, res) => {
@@ -45,12 +55,13 @@ const findItemByID = async (model, req, res) => {
 
   return await Model.findByPk(req.params.id, {
     include: includeAssociations(model),
-  }).then((item) => {
-    // console.log('findbyID: ', item);
-    item == null
-      ? res.status(404).json({ error: `${model} not found` })
-      : res.json(item);
-  });
+  })
+    .then((item) => {
+      item == null ? res.status(404).json(get404Error(model)) : res.json(item);
+    })
+    .catch((error) => {
+      get400Error(error, res);
+    });
 };
 
 const updateItem = async (model, req, res) => {
@@ -58,21 +69,29 @@ const updateItem = async (model, req, res) => {
 
   return await Model.update(req.body, {
     where: { id: req.params.id },
-  }).then((item) => {
-    item[0] == false
-      ? res.status(404).json({ error: `${model} not found` })
-      : res.json({ success: `${model} updated` });
-  });
+  })
+    .then((item) => {
+      item[0] == false
+        ? res.status(404).json(get404Error(model))
+        : res.json({ success: `${model} updated` });
+    })
+    .catch((error) => {
+      get400Error(error, res);
+    });
 };
 
 const deleteItem = async (model, req, res) => {
   const Model = getModel(model);
 
-  return await Model.destroy({ where: { id: req.params.id } }).then((item) => {
-    item > 0
-      ? res.json({ success: `${model} deleted` })
-      : res.status(404).json({ error: `${model} not found` });
-  });
+  return await Model.destroy({ where: { id: req.params.id } })
+    .then((item) => {
+      item > 0
+        ? res.json({ success: `${model} deleted` })
+        : res.status(404).json(get404Error(model));
+    })
+    .catch((error) => {
+      get400Error(error, res);
+    });
 };
 
 export { createItem, findItem, findItemByID, updateItem, deleteItem };
