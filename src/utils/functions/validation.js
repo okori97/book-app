@@ -1,10 +1,11 @@
-const modelError = ({ errors }, res) => {
-  let errorMessage;
+const get400Error = ({ errors }, res) => {
+  const errorMessage = handleMultipleErrors(errors);
 
-  errorMessage = handleMultipleErrors(errors, errorMessage);
-  errorMessage
-    ? res.status(400).json({ error: `${errorMessage}` })
-    : res.status(500).json({ error: errors });
+  if (errorMessage) {
+    res.status(400).json({ error: `${errorMessage}` });
+  } else {
+    res.status(500).json({ error: errors });
+  }
 };
 
 const isContentTypeJson = (req) => {
@@ -17,13 +18,22 @@ const isContentTypeJson = (req) => {
   return isTypeJson;
 };
 
+const get404Error = (model) => {
+  return { error: `Sorry, No ${model}(s) found` };
+};
+
 const requestError = (res) => {
   return res.status(400).json({ error: 'Bad request' });
 };
 
-export { modelError, isContentTypeJson, requestError };
-function handleMultipleErrors(errors, errorMessage) {
-  errorMessage = [];
+function handleMultipleErrors(errors) {
+  let errorMessage = [];
+
+  /**
+   if more than one error, then grab error type ( e.g 'password') and push it to array
+  or simply add single error message to array
+   */
+
   if (errors.length > 1) {
     errors.map((error) => {
       errorMessage.push(error.path);
@@ -33,8 +43,16 @@ function handleMultipleErrors(errors, errorMessage) {
       errorMessage.push(error.message);
     });
   }
-  errorMessage.length > 1
-    ? (errorMessage = 'Please input a valid ' + errorMessage.join(' and '))
-    : (errorMessage = errorMessage.join());
+
+  if (errorMessage.length > 1) {
+    // turn array of mutiple errors into sentence and make a string
+    errorMessage = 'Please input a valid ' + errorMessage.join(' and ');
+  } else {
+    // convert array of single error message to string
+    errorMessage = errorMessage.join();
+  }
+
   return errorMessage;
 }
+
+export { get400Error, isContentTypeJson, requestError, get404Error };
