@@ -1,6 +1,6 @@
 import { Sequelize } from 'sequelize';
 import ReaderModel from './Reader.js';
-import BookModel from './Books.js';
+import BookModel from './Book.js';
 import authorModel from './Author.js';
 import genreModel from './Genre.js';
 
@@ -18,6 +18,9 @@ const setupDatabase = () => {
   const Book = BookModel(connection, Sequelize);
   const Genre = genreModel(connection, Sequelize);
   const Author = authorModel(connection, Sequelize);
+
+  Genre.hasMany(Book);
+  Book.belongsTo(Genre);
 
   connection.sync({ alter: true });
 
