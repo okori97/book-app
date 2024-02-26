@@ -1,6 +1,5 @@
 import {
   isContentTypeJson,
-  modelError,
   requestError,
 } from '../utils/functions/validation.js';
 import {
@@ -17,7 +16,7 @@ export const createBook = async (req, res) => {
       ? await createItem('book', req, res)
       : requestError(res);
   } catch (error) {
-    modelError(error, res);
+    console.error;
   }
 };
 
@@ -27,7 +26,7 @@ export const findAll = async (req, res) => {
       ? await findItem('book', req, res)
       : requestError(res);
   } catch (error) {
-    modelError(error, res);
+    console.error;
   }
 };
 
@@ -35,7 +34,7 @@ export const findBook = async (req, res) => {
   try {
     await findItemByID('book', req, res);
   } catch (error) {
-    modelError(error, res);
+    console.error;
   }
 };
 
@@ -45,7 +44,7 @@ export const updateBook = async (req, res) => {
       ? await updateItem('book', req, res)
       : requestError(res);
   } catch (error) {
-    modelError(error, res);
+    console.error;
   }
 };
 
@@ -55,6 +54,6 @@ export const deleteBook = async (req, res) => {
       ? await deleteItem('book', req, res)
       : requestError(res);
   } catch (error) {
-    modelError(error, res);
+    console.error;
   }
 };

@@ -1,5 +1,4 @@
 import {
-  modelError,
   isContentTypeJson,
   requestError,
 } from '../utils/functions/validation.js';
@@ -17,7 +16,7 @@ export const createReader = async (req, res) => {
       ? await createItem('reader', req, res)
       : requestError(res);
   } catch (error) {
-    modelError(error, res);
+    console.error;
   }
 };
 
@@ -25,7 +24,7 @@ export const findAll = async (req, res) => {
   try {
     await findItem('reader', req, res);
   } catch (error) {
-    modelError(error, res);
+    console.error;
   }
 };
 
@@ -35,7 +34,7 @@ export const findReader = async (req, res) => {
       ? await findItemByID('reader', req, res)
       : requestError(res);
   } catch (error) {
-    modelError(error, res);
+    console.error;
   }
 };
 
@@ -47,7 +46,7 @@ export const updateReader = async (req, res) => {
       ? await updateItem('reader', req, res)
       : requestError(res);
   } catch (error) {
-    modelError(error, res);
+    console.error;
   }
 };
 
@@ -57,6 +56,6 @@ export const deleteReader = async (req, res) => {
       ? await deleteItem('reader', req, res)
       : requestError(res);
   } catch (error) {
-    modelError(error, res);
+    console.error;
   }
 };
