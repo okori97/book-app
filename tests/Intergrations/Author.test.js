@@ -2,9 +2,9 @@ import { expect } from 'chai';
 import request from 'supertest';
 import { getPlainResponse } from '../test-helpers.js';
 import { beforeEach, describe, it } from 'mocha';
-import { Author, connection } from '../../src/models/index.js';
+import { Author, Book, connection } from '../../src/models/index.js';
 import { app } from '../../src/app.js';
-import { dummyAuthor } from '../../src/utils/fake-data.js';
+import { dummyAuthor, dummyBook } from '../../src/utils/fake-data.js';
 
 describe('/Authors', () => {
   beforeEach(async () => {
@@ -47,11 +47,14 @@ describe('/Authors', () => {
     });
 
     describe('with records in the database', () => {
-      let authors;
+      let authors, books;
 
       beforeEach(async () => {
         authors = await Author.bulkCreate([dummyAuthor(), dummyAuthor()]);
-
+        books = await Book.bulkCreate([
+          dummyBook({ AuthorId: authors[0].id }),
+          dummyBook({ AuthorId: authors[1].id }),
+        ]);
         authors = authors.map((author) => getPlainResponse(author));
       });
 
@@ -61,14 +64,17 @@ describe('/Authors', () => {
 
           expect(response.status).to.equal(200);
           expect(response.body.length).to.eql(2);
-
           response.body.forEach((record) => {
             const expected = authors.find((author) => {
               return author.id == record.id;
             });
+
             expect(record.author).to.eql(expected.author);
+            record.Books.should.all.haveOwnProperty('AuthorId');
+            expect(record.Books[0].AuthorId).to.eql(record.id);
           });
         });
+
         it('returns a 404 if no authors in the database', async () => {
           await Author.destroy({ where: {} });
           const response = await request(app).get('/authors');
@@ -80,11 +86,15 @@ describe('/Authors', () => {
 
       describe('GET /authors/:id', () => {
         it('gets a single author by id', async () => {
-          const existing = authors[0];
-          const response = await request(app).get(`/authors/${existing.id}`);
+          const existing = await Author.findByPk(authors[0].id);
+          const response = await request(app).get(`/authors/${existing.id}`, {
+            include: [Book],
+          });
 
           expect(response.status).to.equal(200);
           expect(response.body.author).to.equal(existing.author);
+          expect(response.body.Books[0].id).to.equal(books[0].id);
+          expect(response.body.Books[0].title).to.equal(books[0].title);
         });
 
         it('returns 404 if the author does not exist', async () => {

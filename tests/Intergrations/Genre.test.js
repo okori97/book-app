@@ -4,13 +4,19 @@ import { beforeEach, describe, it } from 'mocha';
 import { expect, should, use } from 'chai';
 import chaiThings from 'chai-things';
 import { app } from '../../src/app.js';
-import { Genre } from '../../src/models/index.js';
-import { dummyGenre } from '../../src/utils/fake-data.js';
+import { Genre, Author, Book } from '../../src/models/index.js';
+import {
+  dummyGenre,
+  dummyAuthor,
+  dummyBook,
+} from '../../src/utils/fake-data.js';
 should(use(chaiThings));
 
 describe('Genre', () => {
   beforeEach(async () => {
     await Genre.destroy({ where: {} });
+    await Book.destroy({ where: {} });
+    await Author.destroy({ where: {} });
   });
 
   describe('with no records in the database', () => {
@@ -22,7 +28,6 @@ describe('Genre', () => {
         let newGenre = await Genre.findOne({
           where: { genre: fakeGenre.genre },
         });
-
         newGenre = getPlainResponse(newGenre);
 
         expect(response.status).to.equal(201);
@@ -49,11 +54,15 @@ describe('Genre', () => {
     });
 
     describe('with records in the database', () => {
-      let genres;
+      let genres, authors;
 
       beforeEach(async () => {
         genres = await Genre.bulkCreate([dummyGenre(), dummyGenre()]);
-
+        authors = await Author.bulkCreate([dummyAuthor(), dummyAuthor()]);
+        await Book.bulkCreate([
+          dummyBook({ GenreId: genres[0].id, AuthorId: authors[0].id }),
+          dummyBook({ GenreId: genres[1].id, AuthorId: authors[1].id }),
+        ]);
         genres = genres.map((genre) => getPlainResponse(genre));
       });
 
@@ -69,6 +78,7 @@ describe('Genre', () => {
               return genre.id == record.id;
             });
             expect(record.genre).to.eql(expected.genre);
+            expect(record.Books[0].GenreId).to.eql(record.id);
           });
         });
 
@@ -88,6 +98,7 @@ describe('Genre', () => {
 
           expect(response.status).to.equal(200);
           expect(response.body.genre).to.equal(existing.genre);
+          expect(response.body.Books[0].GenreId).to.eql(response.body.id);
         });
 
         it('returns 404 if the genre does not exist', async () => {
