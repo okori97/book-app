@@ -7,7 +7,7 @@ const authorModel = (connection, DataTypes) => {
       validate: {
         notNull: {
           args: true,
-          msg: 'Please input an author name',
+          msg: 'Please input a author name',
         },
         notEmpty: {
           true: true,
