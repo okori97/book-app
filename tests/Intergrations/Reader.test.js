@@ -1,7 +1,7 @@
 import { Reader } from '../../src/models/index.js';
 import request from 'supertest';
 import { expect, should, use } from 'chai';
-import { describe, it, beforeEach, before } from 'mocha';
+import { describe, it, beforeEach } from 'mocha';
 import { app } from '../../src/app.js';
 import chaiThings from 'chai-things';
 import { getPlainResponse } from '../test-helpers.js';
@@ -16,7 +16,6 @@ describe('/Readers', () => {
 
   describe('with no records in the database', () => {
     let fakeReader = dummyReader();
-
     describe('POST /readers', () => {
       it('creates new records in the database', async () => {
         const response = await request(app).post('/readers').send(fakeReader);
@@ -164,7 +163,7 @@ describe('/Readers', () => {
       });
 
       it('returns a 404 if there are no users in the database', async () => {
-        await Reader.destroy({ truncate: true });
+        await Reader.destroy({ where: {} });
         const response = await request(app).get('/readers');
 
         expect(response.body).to.haveOwnProperty('error');
