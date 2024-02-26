@@ -2,34 +2,41 @@ import { expect, should, use } from 'chai';
 import chaiThings from 'chai-things';
 import request from 'supertest';
 import { beforeEach, describe, it } from 'mocha';
-import { Book } from '../../src/models/index.js';
+import { Book, Genre } from '../../src/models/index.js';
 import { app } from '../../src/app.js';
 import { getPlainResponse } from '../test-helpers.js';
+import { dummyBook, dummyGenre } from '../../src/utils/fake-data.js';
 
 should(use(chaiThings));
 
 describe('/Books', () => {
   beforeEach(async () => {
     await Book.destroy({ where: {} });
+    await Genre.destroy({ where: {} });
   });
 
   describe('with NO records in the database', () => {
+    let fakeBook, fakeGenre;
+
+    beforeEach(async () => {
+      fakeGenre = await Genre.create(dummyGenre());
+      fakeGenre = await getPlainResponse(fakeGenre);
+      fakeBook = dummyBook({ GenreId: fakeGenre.id });
+    });
+
     describe('POST /books', () => {
       it('creates new records in the database', async () => {
-        const response = await request(app).post('/books').send({
-          title: 'The Trial',
-          author: 'Franz Kafka',
-          genre: 'Surreal',
-          ISBN: 'GB29 NWBK 6016 1331 9268 19',
+        const response = await request(app).post('/books').send(fakeBook);
+        const newBook = await Book.findByPk(response.body.id, {
+          include: Genre,
         });
-        const newBook = await Book.findByPk(response.body.id, { raw: true });
 
         expect(response.status).to.equal(201);
-        expect(response.body.title).to.equal('The Trial');
-        expect(newBook.title).to.equal('The Trial');
-        expect(newBook.author).to.equal('Franz Kafka');
-        expect(newBook.genre).to.equal('Surreal');
-        expect(newBook.ISBN).to.equal('GB29 NWBK 6016 1331 9268 19');
+
+        expect(response.body.title).to.equal(fakeBook.title);
+        expect(newBook.title).to.equal(fakeBook.title);
+        expect(response.body.GenreId).to.equal(newBook.Genre.id);
+        expect(newBook.ISBN).to.equal(fakeBook.ISBN);
       });
 
       it('returns a 400 if request is not of the correct type', async () => {
@@ -43,22 +50,18 @@ describe('/Books', () => {
       });
 
       it('returns an 404 if the book title does not exist', async () => {
-        const response = await request(app).post('/books').send({
-          author: 'Franz Kafka',
-          genre: 'Surreal',
-          ISBN: 'GB29 NWBK 6016 1331 9268 19',
-        });
+        const response = await request(app)
+          .post('/books')
+          .send(dummyBook({ title: null }));
 
         expect(response.status).to.equal(400);
         expect(response.body).to.haveOwnProperty('error');
       });
 
       it('returns an 404 if the author does not exist', async () => {
-        const response = await request(app).post('/books').send({
-          title: 'The Trial',
-          genre: 'Surreal',
-          ISBN: 'GB29 NWBK 6016 1331 9268 19',
-        });
+        const response = await request(app)
+          .post('/books')
+          .send(dummyBook({ AuthorId: null }));
 
         expect(response.status).to.equal(400);
         expect(response.body).to.haveOwnProperty('error');
@@ -67,21 +70,12 @@ describe('/Books', () => {
   });
 
   describe('with records in the database', () => {
-    let books;
+    let books, genres;
     beforeEach(async () => {
+      genres = await Genre.bulkCreate([dummyGenre(), dummyGenre()]);
       books = await Book.bulkCreate([
-        {
-          title: 'The Trial',
-          author: 'Franz Kafka',
-          genre: 'Surreal',
-          ISBN: 'GB29 NWBK 6016 1331 9268 19',
-        },
-        {
-          title: 'Infinite Jest',
-          author: 'David F. Wallace',
-          genre: 'Postmodern',
-          ISBN: 'GB33 NWBK 4024 1551 9227 86',
-        },
+        dummyBook({ GenreId: genres[0].id }),
+        dummyBook({ GenreId: genres[1].id }),
       ]);
 
       books = books.map((record) => getPlainResponse(record));
@@ -118,6 +112,7 @@ describe('/Books', () => {
         const response = await request(app).get(`/books/${books[0].id}`);
         const expected = books[0];
 
+        // console.log(response.body);
         expect(response.status).to.equal(200);
         expect(response.body.title).to.equal(expected.title);
         expect(response.body.author).to.equal(expected.author);
@@ -176,7 +171,7 @@ describe('/Books', () => {
 
         const currentBooks = await Book.findAll({
           raw: true,
-          attributes: ['title', 'author', 'genre', 'ISBN'],
+          attributes: ['title', 'ISBN'],
         });
 
         expect(currentBooks.length).to.equal(books.length - 1);
@@ -190,7 +185,7 @@ describe('/Books', () => {
         const response = await request(app).delete('/books/1234');
         const currentBooks = await Book.findAll({
           raw: true,
-          attributes: ['title', 'author', 'genre', 'ISBN'],
+          attributes: ['title', 'ISBN'],
         });
 
         expect(currentBooks.length).to.equal(books.length);

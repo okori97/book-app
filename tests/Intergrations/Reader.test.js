@@ -35,9 +35,7 @@ describe('/Readers', () => {
       });
 
       it('returns a 400 if the request body is empty', async () => {
-        const response = await request(app)
-          .post('/readers')
-          .send({ name: 'name' });
+        const response = await request(app).post('/readers').send({});
 
         expect(response.status).to.eql(400);
         expect(response.body).to.haveOwnProperty('error');
@@ -54,77 +52,65 @@ describe('/Readers', () => {
       });
 
       it('returns an  400 if the name does not exist', async () => {
-        const response = await request(app).post('/readers').send({
-          email: 'okori@gmail.com',
-          password: 'password123',
-        });
+        const response = await request(app)
+          .post('/readers')
+          .send(dummyReader({ name: null }));
 
         expect(response.status).to.equal(400);
         expect(response.body).to.haveOwnProperty('error');
       });
       it('returns an  400 if the name is an empty string', async () => {
-        const response = await request(app).post('/readers').send({
-          email: 'okori@gmail.com',
-          password: 'password123',
-          name: '',
-        });
+        const response = await request(app)
+          .post('/readers')
+          .send(dummyReader({ name: '' }));
 
         expect(response.status).to.equal(400);
         expect(response.body).to.haveOwnProperty('error');
       });
       it('returns an  400 if the email does not exist', async () => {
-        const response = await request(app).post('/readers').send({
-          name: 'Okori Mccalla',
-          password: 'password123',
-        });
+        const response = await request(app)
+          .post('/readers')
+          .send(dummyReader({ email: null }));
 
         expect(response.status).to.equal(400);
         expect(response.body).to.haveOwnProperty('error');
       });
 
       it('returns an  400 if the email is not valid', async () => {
-        const response = await request(app).post('/readers').send({
-          email: 'okorimailcom',
-          password: 'password123',
-          name: 'Okori Mccalla',
-        });
+        const response = await request(app)
+          .post('/readers')
+          .send(dummyReader({ email: 'okorimail.com' }));
 
         expect(response.status).to.equal(400);
         expect(response.body).to.haveOwnProperty('error');
       });
 
       it('returns an  400 if the password does not exist', async () => {
-        const response = await request(app).post('/readers').send({
-          name: 'Okori McCalla',
-          email: 'okori@gmail.com',
-        });
+        const response = await request(app)
+          .post('/readers')
+          .send(dummyReader({ password: null }));
 
         expect(response.status).to.equal(400);
         expect(response.body).to.haveOwnProperty('error');
       });
 
       it('returns an 400 if the password is NOT more than 8 chars', async () => {
-        const response = await request(app).post('/readers').send({
-          name: 'Okori McCalla',
-          email: 'okori@gmail.com',
-          password: 'thisis78',
-        });
+        const response = await request(app)
+          .post('/readers')
+          .send(dummyReader({ password: 'thisis78' }));
 
         expect(response.status).to.equal(400);
         expect(response.body).to.haveOwnProperty('error');
       });
 
       it('does not return password from API', async () => {
-        const response = await request(app).post('/readers').send({
-          name: 'Okori McCalla',
-          email: 'okori@gmail.com',
-          password: 'password123',
-        });
+        const reader = dummyReader();
+        const response = await request(app).post('/readers').send(reader);
 
         const checkPasswordInDb = await Reader.findOne({
-          where: { password: 'password123' },
+          where: { password: reader.password },
         });
-        expect(checkPasswordInDb.name).to.eql('Okori McCalla');
+        expect(checkPasswordInDb.name).to.eql(reader.name);
         expect(response.status).to.equal(201);
         expect(response.body.password).to.equal(undefined);
       });
@@ -145,8 +131,7 @@ describe('/Readers', () => {
 
         expect(response.status).to.equal(200);
         expect(response.body.length).to.equal(2);
-        response.body.should.all.not.have.property('createdAt');
-        response.body.should.all.not.have.property('updatedAt');
+        response.body.should.all.not.have.property('createdAt' && 'updatedAt');
         response.body.forEach((record) => {
           const expected = readers.find((reader) => {
             return reader.id == record.id;
@@ -176,6 +161,7 @@ describe('/Readers', () => {
         const idParam = readers[0].id;
         const response = await request(app).get(`/readers/${idParam}`);
         const expected = readers.find((reader) => reader.id == idParam);
+
         expect(response.status).to.equal(200);
         expect(expected.name).to.equal(response.body.name);
         expect(expected.email).to.equal(response.body.email);
@@ -249,7 +235,7 @@ describe('/Readers', () => {
         const deletedReader = await Reader.findByPk(idParam, { raw: true });
         const currentReaders = await Reader.findAll({
           raw: true,
-          attributes: ['name', 'email', 'password'],
+          attributes: ['name', 'email'],
         });
 
         expect(currentReaders.length).to.equal(readers.length - 1);

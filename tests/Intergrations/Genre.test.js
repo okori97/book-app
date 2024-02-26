@@ -1,6 +1,6 @@
 import request from 'supertest';
 import { getPlainResponse } from '../test-helpers.js';
-import { beforeEach, describe, it, afterEach } from 'mocha';
+import { beforeEach, describe, it } from 'mocha';
 import { expect, should, use } from 'chai';
 import chaiThings from 'chai-things';
 import { app } from '../../src/app.js';
@@ -9,7 +9,7 @@ import { dummyGenre } from '../../src/utils/fake-data.js';
 should(use(chaiThings));
 
 describe('Genre', () => {
-  afterEach(async () => {
+  beforeEach(async () => {
     await Genre.destroy({ where: {} });
   });
 
