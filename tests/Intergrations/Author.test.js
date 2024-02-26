@@ -1,14 +1,14 @@
-import { expect, should, use } from 'chai';
-import chaiThings from 'chai-things';
+import { expect } from 'chai';
 import request from 'supertest';
 import { getPlainResponse } from '../test-helpers.js';
 import { beforeEach, describe, it } from 'mocha';
-import { Author } from '../../src/models/index.js';
+import { Author, connection } from '../../src/models/index.js';
 import { app } from '../../src/app.js';
 import { dummyAuthor } from '../../src/utils/fake-data.js';
 
 describe('/Authors', () => {
   beforeEach(async () => {
+    await connection.sync({ force: true });
     await Author.destroy({ where: {} });
   });
   describe('with no records in the database', () => {
@@ -25,6 +25,7 @@ describe('/Authors', () => {
         expect(response.status).to.equal(201);
         expect(newAuthor).to.not.eql(null);
         expect(newAuthor.author).to.eql(fakeAuthor.author);
+        expect(newAuthor.id).to.eql(response.body.id);
       });
 
       it('returns an 400 if no author provided', async () => {

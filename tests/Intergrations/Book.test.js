@@ -2,33 +2,39 @@ import { expect, should, use } from 'chai';
 import chaiThings from 'chai-things';
 import request from 'supertest';
 import { beforeEach, describe, it } from 'mocha';
-import { Book, Genre } from '../../src/models/index.js';
+import { Book, Genre, Author } from '../../src/models/index.js';
 import { app } from '../../src/app.js';
 import { getPlainResponse } from '../test-helpers.js';
-import { dummyBook, dummyGenre } from '../../src/utils/fake-data.js';
+import {
+  dummyAuthor,
+  dummyBook,
+  dummyGenre,
+} from '../../src/utils/fake-data.js';
 
 should(use(chaiThings));
 
 describe('/Books', () => {
   beforeEach(async () => {
     await Book.destroy({ where: {} });
-    await Genre.destroy({ where: {} });
+    await Author.destroy({ where: {} });
   });
 
   describe('with NO records in the database', () => {
-    let fakeBook, fakeGenre;
+    let fakeBook, fakeGenre, fakeAuthor;
 
     beforeEach(async () => {
+      fakeAuthor = await Author.create(dummyAuthor());
+      fakeAuthor = await getPlainResponse(fakeAuthor);
       fakeGenre = await Genre.create(dummyGenre());
       fakeGenre = await getPlainResponse(fakeGenre);
-      fakeBook = dummyBook({ GenreId: fakeGenre.id });
+      fakeBook = dummyBook({ GenreId: fakeGenre.id, AuthorId: fakeAuthor.id });
     });
 
     describe('POST /books', () => {
       it('creates new records in the database', async () => {
         const response = await request(app).post('/books').send(fakeBook);
         const newBook = await Book.findByPk(response.body.id, {
-          include: Genre,
+          include: [Genre, Author],
         });
 
         expect(response.status).to.equal(201);
@@ -36,6 +42,7 @@ describe('/Books', () => {
         expect(response.body.title).to.equal(fakeBook.title);
         expect(newBook.title).to.equal(fakeBook.title);
         expect(response.body.GenreId).to.equal(newBook.Genre.id);
+        expect(response.body.AuthorId).to.equal(newBook.Author.id);
         expect(newBook.ISBN).to.equal(fakeBook.ISBN);
       });
 
@@ -57,25 +64,17 @@ describe('/Books', () => {
         expect(response.status).to.equal(400);
         expect(response.body).to.haveOwnProperty('error');
       });
-
-      it('returns an 404 if the author does not exist', async () => {
-        const response = await request(app)
-          .post('/books')
-          .send(dummyBook({ AuthorId: null }));
-
-        expect(response.status).to.equal(400);
-        expect(response.body).to.haveOwnProperty('error');
-      });
     });
   });
 
   describe('with records in the database', () => {
-    let books, genres;
+    let books, genres, authors;
     beforeEach(async () => {
       genres = await Genre.bulkCreate([dummyGenre(), dummyGenre()]);
+      authors = await Author.bulkCreate([dummyAuthor(), dummyAuthor()]);
       books = await Book.bulkCreate([
-        dummyBook({ GenreId: genres[0].id }),
-        dummyBook({ GenreId: genres[1].id }),
+        dummyBook({ GenreId: genres[0].id, AuthorId: authors[0].id }),
+        dummyBook({ GenreId: genres[1].id, AuthorId: authors[1].id }),
       ]);
 
       books = books.map((record) => getPlainResponse(record));
@@ -112,7 +111,6 @@ describe('/Books', () => {
         const response = await request(app).get(`/books/${books[0].id}`);
         const expected = books[0];
 
-        // console.log(response.body);
         expect(response.status).to.equal(200);
         expect(response.body.title).to.equal(expected.title);
         expect(response.body.author).to.equal(expected.author);
