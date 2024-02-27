@@ -36,7 +36,7 @@ const createItem = async (model, req, res) => {
 const findItem = async (model, req, res) => {
   const Model = getModel(model);
 
-  return await Model.findAll({
+  return Model.findAll({
     include: includeAssociations(model),
     attributes: { exclude: ['createdAt', 'updatedAt'] },
   })
@@ -53,7 +53,7 @@ const findItem = async (model, req, res) => {
 const findItemByID = async (model, req, res) => {
   const Model = getModel(model);
 
-  return await Model.findByPk(req.params.id, {
+  return Model.findByPk(req.params.id, {
     include: includeAssociations(model),
   })
     .then((item) => {
@@ -67,7 +67,7 @@ const findItemByID = async (model, req, res) => {
 const updateItem = async (model, req, res) => {
   const Model = getModel(model);
 
-  return await Model.update(req.body, {
+  return Model.update(req.body, {
     where: { id: req.params.id },
   })
     .then((item) => {
@@ -83,7 +83,7 @@ const updateItem = async (model, req, res) => {
 const deleteItem = async (model, req, res) => {
   const Model = getModel(model);
 
-  return await Model.destroy({ where: { id: req.params.id } })
+  return Model.destroy({ where: { id: req.params.id } })
     .then((item) => {
       item > 0
         ? res.json({ success: `${model} deleted` })
